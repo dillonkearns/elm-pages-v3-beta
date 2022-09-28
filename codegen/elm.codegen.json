@@ -11,7 +11,7 @@
         },
         "local": [
             "src/",
-            "codegen/helpers/"
+            "generator/code-to-copy/"
         ]
     }
 }

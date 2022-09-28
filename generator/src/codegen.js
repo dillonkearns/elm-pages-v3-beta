@@ -16,11 +16,6 @@ global.builtAt = new Date();
  * @param {string} basePath
  */
 async function generate(basePath) {
-  const cliCode = await generateTemplateModuleConnector(basePath, "cli");
-  const browserCode = await generateTemplateModuleConnector(
-    basePath,
-    "browser"
-  );
   ensureDirSync("./elm-stuff");
   ensureDirSync("./.elm-pages");
   ensureDirSync("./gen");
@@ -35,6 +30,11 @@ async function generate(basePath) {
   await fsExtra.copy(path.join(__dirname, "../code-to-copy"), "./elm-stuff/elm-pages/client/.elm-pages/", {
     recursive: true
   });
+  const cliCode = await generateTemplateModuleConnector(basePath, "cli");
+  const browserCode = await generateTemplateModuleConnector(
+    basePath,
+    "browser"
+  );
 
   //   await copyDirFlat(path.join(__dirname, "../code-to-copy/"), "./elm-stuff/elm-pages/client/.elm-pages/");
   // await copyDirFlat(path.join(__dirname, "../code-to-copy"), ".elm-pages/");
