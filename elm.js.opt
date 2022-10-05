@@ -5272,14 +5272,14 @@
         return $justinmimbs$date$Date$formatWithLanguage_fn($justinmimbs$date$Date$language_en, pattern);
     };
     var $justinmimbs$date$Date$toIsoString = $justinmimbs$date$Date$format("yyyy-MM-dd");
-    var $author$project$Head$Seo$dateOrDateTimeToString = function (dateOrTime) {
-        if (!dateOrTime.$) {
-            var date = dateOrTime.a;
+    var $dillonkearns$elm_date_or_date_time$DateOrDateTime$dateOrDateTimeToIso8601String = function (dateOrDateTime) {
+        if (!dateOrDateTime.$) {
+            var date = dateOrDateTime.a;
             return $justinmimbs$date$Date$toIsoString(date);
         }
         else {
-            var posix = dateOrTime.a;
-            return $rtfeldman$elm_iso8601_date_strings$Iso8601$fromTime(posix);
+            var dateTime = dateOrDateTime.a;
+            return $rtfeldman$elm_iso8601_date_strings$Iso8601$fromTime(dateTime);
         }
     };
     var $elm$core$List$maybeCons_fn = function (f, mx, xs) {
@@ -5549,9 +5549,9 @@
                     return _Utils_ap(_List_fromArray([
                         _Utils_Tuple2("og:type", $elm$core$Maybe$Just($author$project$Head$raw("article"))),
                         _Utils_Tuple2("article:section", $elm$core$Maybe$map_fn($author$project$Head$raw, articleDetails.fs)),
-                        _Utils_Tuple2("article:published_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $author$project$Head$Seo$dateOrDateTimeToString, $author$project$Head$raw), articleDetails.fq)),
-                        _Utils_Tuple2("article:modified_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $author$project$Head$Seo$dateOrDateTimeToString, $author$project$Head$raw), articleDetails.fg)),
-                        _Utils_Tuple2("article:expiration_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $author$project$Head$Seo$dateOrDateTimeToString, $author$project$Head$raw), articleDetails.e3))
+                        _Utils_Tuple2("article:published_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $dillonkearns$elm_date_or_date_time$DateOrDateTime$dateOrDateTimeToIso8601String, $author$project$Head$raw), articleDetails.fq)),
+                        _Utils_Tuple2("article:modified_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $dillonkearns$elm_date_or_date_time$DateOrDateTime$dateOrDateTimeToIso8601String, $author$project$Head$raw), articleDetails.fg)),
+                        _Utils_Tuple2("article:expiration_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $dillonkearns$elm_date_or_date_time$DateOrDateTime$dateOrDateTimeToIso8601String, $author$project$Head$raw), articleDetails.e3))
                     ]), $elm$core$List$map_fn(function (tag) {
                         return _Utils_Tuple2("article:tag", $elm$core$Maybe$Just($author$project$Head$raw(tag)));
                     }, articleDetails.bI));
@@ -5560,7 +5560,7 @@
                     return _Utils_ap(_List_fromArray([
                         _Utils_Tuple2("og:type", $elm$core$Maybe$Just($author$project$Head$raw("book"))),
                         _Utils_Tuple2("og:isbn", $elm$core$Maybe$map_fn($author$project$Head$raw, bookDetails.fb)),
-                        _Utils_Tuple2("og:release_date", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $author$project$Head$Seo$dateOrDateTimeToString, $author$project$Head$raw), bookDetails.fr))
+                        _Utils_Tuple2("og:release_date", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $dillonkearns$elm_date_or_date_time$DateOrDateTime$dateOrDateTimeToIso8601String, $author$project$Head$raw), bookDetails.fr))
                     ]), $elm$core$List$map_fn(function (tag) {
                         return _Utils_Tuple2("book:tag", $elm$core$Maybe$Just($author$project$Head$raw(tag)));
                     }, bookDetails.bI));
