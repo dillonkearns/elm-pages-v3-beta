@@ -1730,6 +1730,106 @@
                 : (obj[name] = exports[name]);
         }
     }
+    var _Bitwise_and_fn = function (a, b) {
+        return a & b;
+    }, _Bitwise_and = F2(_Bitwise_and_fn);
+    var _Bitwise_or_fn = function (a, b) {
+        return a | b;
+    }, _Bitwise_or = F2(_Bitwise_or_fn);
+    var _Bitwise_xor_fn = function (a, b) {
+        return a ^ b;
+    }, _Bitwise_xor = F2(_Bitwise_xor_fn);
+    function _Bitwise_complement(a) {
+        return ~a;
+    }
+    ;
+    var _Bitwise_shiftLeftBy_fn = function (offset, a) {
+        return a << offset;
+    }, _Bitwise_shiftLeftBy = F2(_Bitwise_shiftLeftBy_fn);
+    var _Bitwise_shiftRightBy_fn = function (offset, a) {
+        return a >> offset;
+    }, _Bitwise_shiftRightBy = F2(_Bitwise_shiftRightBy_fn);
+    var _Bitwise_shiftRightZfBy_fn = function (offset, a) {
+        return a >>> offset;
+    }, _Bitwise_shiftRightZfBy = F2(_Bitwise_shiftRightZfBy_fn);
+    // STRINGS
+    var _Parser_isSubString_fn = function (smallString, offset, row, col, bigString) {
+        var smallLength = smallString.length;
+        var isGood = offset + smallLength <= bigString.length;
+        for (var i = 0; isGood && i < smallLength;) {
+            var code = bigString.charCodeAt(offset);
+            isGood =
+                smallString[i++] === bigString[offset++]
+                    && (code === 10 /* \n */
+                        ? (row++, col = 1)
+                        : (col++, (code & 63488) === 55296 ? smallString[i++] === bigString[offset++] : 1));
+        }
+        return _Utils_Tuple3(isGood ? offset : -1, row, col);
+    }, _Parser_isSubString = F5(_Parser_isSubString_fn);
+    // CHARS
+    var _Parser_isSubChar_fn = function (predicate, offset, string) {
+        return (string.length <= offset
+            ? -1
+            :
+                (string.charCodeAt(offset) & 63488) === 55296
+                    ? (predicate(_Utils_chr(string.substr(offset, 2))) ? offset + 2 : -1)
+                    :
+                        (predicate(_Utils_chr(string[offset]))
+                            ? ((string[offset] === "\n") ? -2 : (offset + 1))
+                            : -1));
+    }, _Parser_isSubChar = F3(_Parser_isSubChar_fn);
+    var _Parser_isAsciiCode_fn = function (code, offset, string) {
+        return string.charCodeAt(offset) === code;
+    }, _Parser_isAsciiCode = F3(_Parser_isAsciiCode_fn);
+    // NUMBERS
+    var _Parser_chompBase10_fn = function (offset, string) {
+        for (; offset < string.length; offset++) {
+            var code = string.charCodeAt(offset);
+            if (code < 48 || 57 < code) {
+                return offset;
+            }
+        }
+        return offset;
+    }, _Parser_chompBase10 = F2(_Parser_chompBase10_fn);
+    var _Parser_consumeBase_fn = function (base, offset, string) {
+        for (var total = 0; offset < string.length; offset++) {
+            var digit = string.charCodeAt(offset) - 48;
+            if (digit < 0 || base <= digit)
+                break;
+            total = base * total + digit;
+        }
+        return _Utils_Tuple2(offset, total);
+    }, _Parser_consumeBase = F3(_Parser_consumeBase_fn);
+    var _Parser_consumeBase16_fn = function (offset, string) {
+        for (var total = 0; offset < string.length; offset++) {
+            var code = string.charCodeAt(offset);
+            if (48 <= code && code <= 57) {
+                total = 16 * total + code - 48;
+            }
+            else if (65 <= code && code <= 70) {
+                total = 16 * total + code - 55;
+            }
+            else if (97 <= code && code <= 102) {
+                total = 16 * total + code - 87;
+            }
+            else {
+                break;
+            }
+        }
+        return _Utils_Tuple2(offset, total);
+    }, _Parser_consumeBase16 = F2(_Parser_consumeBase16_fn);
+    // FIND STRING
+    var _Parser_findSubString_fn = function (smallString, offset, row, col, bigString) {
+        var newOffset = bigString.indexOf(smallString, offset);
+        var target = newOffset < 0 ? bigString.length : newOffset + smallString.length;
+        while (offset < target) {
+            var code = bigString.charCodeAt(offset++);
+            code === 10 /* \n */
+                ? (col = 1, row++)
+                : (col++, (code & 63488) === 55296 && offset++);
+        }
+        return _Utils_Tuple3(newOffset, row, col);
+    }, _Parser_findSubString = F5(_Parser_findSubString_fn);
     // HELPERS
     var _VirtualDom_divertHrefToApp;
     var _VirtualDom_doc = typeof document !== "undefined" ? document : {};
@@ -2796,28 +2896,6 @@
             b: keyedNode.b
         };
     }
-    var _Bitwise_and_fn = function (a, b) {
-        return a & b;
-    }, _Bitwise_and = F2(_Bitwise_and_fn);
-    var _Bitwise_or_fn = function (a, b) {
-        return a | b;
-    }, _Bitwise_or = F2(_Bitwise_or_fn);
-    var _Bitwise_xor_fn = function (a, b) {
-        return a ^ b;
-    }, _Bitwise_xor = F2(_Bitwise_xor_fn);
-    function _Bitwise_complement(a) {
-        return ~a;
-    }
-    ;
-    var _Bitwise_shiftLeftBy_fn = function (offset, a) {
-        return a << offset;
-    }, _Bitwise_shiftLeftBy = F2(_Bitwise_shiftLeftBy_fn);
-    var _Bitwise_shiftRightBy_fn = function (offset, a) {
-        return a >> offset;
-    }, _Bitwise_shiftRightBy = F2(_Bitwise_shiftRightBy_fn);
-    var _Bitwise_shiftRightZfBy_fn = function (offset, a) {
-        return a >>> offset;
-    }, _Bitwise_shiftRightZfBy = F2(_Bitwise_shiftRightZfBy_fn);
     // ELEMENT
     var _Debugger_element;
     var _Browser_element = _Debugger_element || F4(function (impl, flagDecoder, debugMetadata, args) {
@@ -3898,7 +3976,7 @@
         else {
             var treeLen = builder.Q * $elm$core$Array$branchFactor;
             var depth = $elm$core$Basics$floor($elm$core$Basics$logBase_fn($elm$core$Array$branchFactor, treeLen - 1));
-            var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.Z) : builder.Z;
+            var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder._) : builder._;
             var tree = $elm$core$Array$treeFromBuilder_fn(correctNodeList, builder.Q);
             return $elm$core$Array$Array_elm_builtin_fn($elm$core$Elm$JsArray$length(builder.W) + treeLen, $elm$core$Basics$max_fn(5, depth * $elm$core$Array$shiftStep), tree, builder.W);
         }
@@ -3908,7 +3986,7 @@
     var $elm$core$Array$initializeHelp_fn = function (fn, fromIndex, len, nodeList, tail) {
         initializeHelp: while (true) {
             if (fromIndex < 0) {
-                return $elm$core$Array$builderToArray_fn(false, { Z: nodeList, Q: (len / $elm$core$Array$branchFactor) | 0, W: tail });
+                return $elm$core$Array$builderToArray_fn(false, { _: nodeList, Q: (len / $elm$core$Array$branchFactor) | 0, W: tail });
             }
             else {
                 var leaf = $elm$core$Array$Leaf(_JsArray_initialize_fn($elm$core$Array$branchFactor, fromIndex, fn));
@@ -3989,7 +4067,7 @@
     var $author$project$Head$Seo$buildSummary_fn = function (_v0, summarySize) {
         var locale = _v0.aY;
         var siteName = _v0.a1;
-        var description = _v0.af;
+        var description = _v0.ag;
         var canonicalUrlOverride = _v0.aO;
         var image = _v0.at;
         var title = _v0.b9;
@@ -3997,13 +4075,13 @@
             bR: _List_Nil,
             bo: $elm$core$Maybe$Nothing,
             aO: canonicalUrlOverride,
-            af: description,
+            ag: description,
             at: image,
             aY: locale,
             a1: siteName,
             b9: title,
             ca: $author$project$Head$Twitter$Summary({
-                af: $elm$core$Maybe$Just(description),
+                ag: $elm$core$Maybe$Just(description),
                 at: $elm$core$Maybe$Just({ aT: image.aT, fy: image.fy }),
                 gH: $elm$core$Maybe$Nothing,
                 jr: summarySize,
@@ -4131,6 +4209,1079 @@
             _Utils_Tuple2("href", $elm$core$Maybe$withDefault_fn($author$project$Head$currentPageFullUrl, $elm$core$Maybe$map_fn($author$project$Head$raw, maybePath)))
         ]));
     };
+    var $elm$core$Basics$composeR_fn = function (f, g, x) {
+        return g(f(x));
+    }, $elm$core$Basics$composeR = F3($elm$core$Basics$composeR_fn);
+    var $rtfeldman$elm_iso8601_date_strings$Iso8601$fromMonth = function (month) {
+        switch (month) {
+            case 0:
+                return 1;
+            case 1:
+                return 2;
+            case 2:
+                return 3;
+            case 3:
+                return 4;
+            case 4:
+                return 5;
+            case 5:
+                return 6;
+            case 6:
+                return 7;
+            case 7:
+                return 8;
+            case 8:
+                return 9;
+            case 9:
+                return 10;
+            case 10:
+                return 11;
+            default:
+                return 12;
+        }
+    };
+    var $elm$time$Time$flooredDiv_fn = function (numerator, denominator) {
+        return $elm$core$Basics$floor(numerator / denominator);
+    }, $elm$time$Time$flooredDiv = F2($elm$time$Time$flooredDiv_fn);
+    var $elm$time$Time$posixToMillis = function (_v0) {
+        var millis = _v0;
+        return millis;
+    };
+    var $elm$time$Time$toAdjustedMinutesHelp_fn = function (defaultOffset, posixMinutes, eras) {
+        toAdjustedMinutesHelp: while (true) {
+            if (!eras.b) {
+                return posixMinutes + defaultOffset;
+            }
+            else {
+                var era = eras.a;
+                var olderEras = eras.b;
+                if (_Utils_cmp(era.o, posixMinutes) < 0) {
+                    return posixMinutes + era.f;
+                }
+                else {
+                    var $temp$defaultOffset = defaultOffset, $temp$posixMinutes = posixMinutes, $temp$eras = olderEras;
+                    defaultOffset = $temp$defaultOffset;
+                    posixMinutes = $temp$posixMinutes;
+                    eras = $temp$eras;
+                    continue toAdjustedMinutesHelp;
+                }
+            }
+        }
+    }, $elm$time$Time$toAdjustedMinutesHelp = F3($elm$time$Time$toAdjustedMinutesHelp_fn);
+    var $elm$time$Time$toAdjustedMinutes_fn = function (_v0, time) {
+        var defaultOffset = _v0.a;
+        var eras = _v0.b;
+        return $elm$time$Time$toAdjustedMinutesHelp_fn(defaultOffset, $elm$time$Time$flooredDiv_fn($elm$time$Time$posixToMillis(time), 60000), eras);
+    }, $elm$time$Time$toAdjustedMinutes = F2($elm$time$Time$toAdjustedMinutes_fn);
+    var $elm$core$Basics$ge = _Utils_ge;
+    var $elm$core$Basics$negate = function (n) {
+        return -n;
+    };
+    var $elm$time$Time$toCivil = function (minutes) {
+        var rawDay = $elm$time$Time$flooredDiv_fn(minutes, 60 * 24) + 719468;
+        var era = (((rawDay >= 0) ? rawDay : (rawDay - 146096)) / 146097) | 0;
+        var dayOfEra = rawDay - (era * 146097);
+        var yearOfEra = ((((dayOfEra - ((dayOfEra / 1460) | 0)) + ((dayOfEra / 36524) | 0)) - ((dayOfEra / 146096) | 0)) / 365) | 0;
+        var dayOfYear = dayOfEra - (((365 * yearOfEra) + ((yearOfEra / 4) | 0)) - ((yearOfEra / 100) | 0));
+        var mp = (((5 * dayOfYear) + 2) / 153) | 0;
+        var month = mp + ((mp < 10) ? 3 : (-9));
+        var year = yearOfEra + (era * 400);
+        return {
+            gV: (dayOfYear - ((((153 * mp) + 2) / 5) | 0)) + 1,
+            hh: month,
+            hI: year + ((month <= 2) ? 1 : 0)
+        };
+    };
+    var $elm$time$Time$toDay_fn = function (zone, time) {
+        return $elm$time$Time$toCivil($elm$time$Time$toAdjustedMinutes_fn(zone, time)).gV;
+    }, $elm$time$Time$toDay = F2($elm$time$Time$toDay_fn);
+    var $elm$core$Basics$modBy = _Basics_modBy;
+    var $elm$time$Time$toHour_fn = function (zone, time) {
+        return _Basics_modBy_fn(24, $elm$time$Time$flooredDiv_fn($elm$time$Time$toAdjustedMinutes_fn(zone, time), 60));
+    }, $elm$time$Time$toHour = F2($elm$time$Time$toHour_fn);
+    var $elm$time$Time$toMillis_fn = function (_v0, time) {
+        return _Basics_modBy_fn(1000, $elm$time$Time$posixToMillis(time));
+    }, $elm$time$Time$toMillis = F2($elm$time$Time$toMillis_fn);
+    var $elm$time$Time$toMinute_fn = function (zone, time) {
+        return _Basics_modBy_fn(60, $elm$time$Time$toAdjustedMinutes_fn(zone, time));
+    }, $elm$time$Time$toMinute = F2($elm$time$Time$toMinute_fn);
+    var $elm$time$Time$Apr = 3;
+    var $elm$time$Time$Aug = 7;
+    var $elm$time$Time$Dec = 11;
+    var $elm$time$Time$Feb = 1;
+    var $elm$time$Time$Jan = 0;
+    var $elm$time$Time$Jul = 6;
+    var $elm$time$Time$Jun = 5;
+    var $elm$time$Time$Mar = 2;
+    var $elm$time$Time$May = 4;
+    var $elm$time$Time$Nov = 10;
+    var $elm$time$Time$Oct = 9;
+    var $elm$time$Time$Sep = 8;
+    var $elm$time$Time$toMonth_fn = function (zone, time) {
+        var _v0 = $elm$time$Time$toCivil($elm$time$Time$toAdjustedMinutes_fn(zone, time)).hh;
+        switch (_v0) {
+            case 1:
+                return 0;
+            case 2:
+                return 1;
+            case 3:
+                return 2;
+            case 4:
+                return 3;
+            case 5:
+                return 4;
+            case 6:
+                return 5;
+            case 7:
+                return 6;
+            case 8:
+                return 7;
+            case 9:
+                return 8;
+            case 10:
+                return 9;
+            case 11:
+                return 10;
+            default:
+                return 11;
+        }
+    }, $elm$time$Time$toMonth = F2($elm$time$Time$toMonth_fn);
+    var $elm$core$String$cons = _String_cons;
+    var $elm$core$String$fromChar = function (_char) {
+        return _String_cons_fn(_char, "");
+    };
+    var $elm$core$String$length = _String_length;
+    var $elm$core$Bitwise$and = _Bitwise_and;
+    var $elm$core$Bitwise$shiftRightBy = _Bitwise_shiftRightBy;
+    var $elm$core$String$repeatHelp_fn = function (n, chunk, result) {
+        return (n <= 0) ? result : $elm$core$String$repeatHelp_fn(n >> 1, _Utils_ap(chunk, chunk), (!(n & 1)) ? result : _Utils_ap(result, chunk));
+    }, $elm$core$String$repeatHelp = F3($elm$core$String$repeatHelp_fn);
+    var $elm$core$String$repeat_fn = function (n, chunk) {
+        return $elm$core$String$repeatHelp_fn(n, chunk, "");
+    }, $elm$core$String$repeat = F2($elm$core$String$repeat_fn);
+    var $elm$core$String$padLeft_fn = function (n, _char, string) {
+        return _Utils_ap($elm$core$String$repeat_fn(n - $elm$core$String$length(string), $elm$core$String$fromChar(_char)), string);
+    }, $elm$core$String$padLeft = F3($elm$core$String$padLeft_fn);
+    var $rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn = function (digits, time) {
+        return $elm$core$String$padLeft_fn(digits, "0", $elm$core$String$fromInt(time));
+    }, $rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString = F2($rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn);
+    var $elm$time$Time$toSecond_fn = function (_v0, time) {
+        return _Basics_modBy_fn(60, $elm$time$Time$flooredDiv_fn($elm$time$Time$posixToMillis(time), 1000));
+    }, $elm$time$Time$toSecond = F2($elm$time$Time$toSecond_fn);
+    var $elm$time$Time$toYear_fn = function (zone, time) {
+        return $elm$time$Time$toCivil($elm$time$Time$toAdjustedMinutes_fn(zone, time)).hI;
+    }, $elm$time$Time$toYear = F2($elm$time$Time$toYear_fn);
+    var $elm$time$Time$Zone_fn = function (a, b) {
+        return { $: 0, a: a, b: b };
+    }, $elm$time$Time$Zone = F2($elm$time$Time$Zone_fn);
+    var $elm$time$Time$utc = $elm$time$Time$Zone_fn(0, _List_Nil);
+    var $rtfeldman$elm_iso8601_date_strings$Iso8601$fromTime = function (time) {
+        return $rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(4, $elm$time$Time$toYear_fn($elm$time$Time$utc, time)) + ("-" + ($rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(2, $rtfeldman$elm_iso8601_date_strings$Iso8601$fromMonth($elm$time$Time$toMonth_fn($elm$time$Time$utc, time))) + ("-" + ($rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(2, $elm$time$Time$toDay_fn($elm$time$Time$utc, time)) + ("T" + ($rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(2, $elm$time$Time$toHour_fn($elm$time$Time$utc, time)) + (":" + ($rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(2, $elm$time$Time$toMinute_fn($elm$time$Time$utc, time)) + (":" + ($rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(2, $elm$time$Time$toSecond_fn($elm$time$Time$utc, time)) + ("." + ($rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(3, $elm$time$Time$toMillis_fn($elm$time$Time$utc, time)) + "Z"))))))))))));
+    };
+    var $elm$core$Basics$identity = function (x) {
+        return x;
+    };
+    var $justinmimbs$date$Date$RD = $elm$core$Basics$identity;
+    var $elm$core$Basics$neq = _Utils_notEqual;
+    var $justinmimbs$date$Date$isLeapYear = function (y) {
+        return ((!_Basics_modBy_fn(4, y)) && (!(!_Basics_modBy_fn(100, y)))) || (!_Basics_modBy_fn(400, y));
+    };
+    var $justinmimbs$date$Date$daysInMonth_fn = function (y, m) {
+        switch (m) {
+            case 0:
+                return 31;
+            case 1:
+                return $justinmimbs$date$Date$isLeapYear(y) ? 29 : 28;
+            case 2:
+                return 31;
+            case 3:
+                return 30;
+            case 4:
+                return 31;
+            case 5:
+                return 30;
+            case 6:
+                return 31;
+            case 7:
+                return 31;
+            case 8:
+                return 30;
+            case 9:
+                return 31;
+            case 10:
+                return 30;
+            default:
+                return 31;
+        }
+    }, $justinmimbs$date$Date$daysInMonth = F2($justinmimbs$date$Date$daysInMonth_fn);
+    var $justinmimbs$date$Date$monthToNumber = function (m) {
+        switch (m) {
+            case 0:
+                return 1;
+            case 1:
+                return 2;
+            case 2:
+                return 3;
+            case 3:
+                return 4;
+            case 4:
+                return 5;
+            case 5:
+                return 6;
+            case 6:
+                return 7;
+            case 7:
+                return 8;
+            case 8:
+                return 9;
+            case 9:
+                return 10;
+            case 10:
+                return 11;
+            default:
+                return 12;
+        }
+    };
+    var $justinmimbs$date$Date$numberToMonth = function (mn) {
+        var _v0 = $elm$core$Basics$max_fn(1, mn);
+        switch (_v0) {
+            case 1:
+                return 0;
+            case 2:
+                return 1;
+            case 3:
+                return 2;
+            case 4:
+                return 3;
+            case 5:
+                return 4;
+            case 6:
+                return 5;
+            case 7:
+                return 6;
+            case 8:
+                return 7;
+            case 9:
+                return 8;
+            case 10:
+                return 9;
+            case 11:
+                return 10;
+            default:
+                return 11;
+        }
+    };
+    var $justinmimbs$date$Date$toCalendarDateHelp_fn = function (y, m, d) {
+        toCalendarDateHelp: while (true) {
+            var monthDays = $justinmimbs$date$Date$daysInMonth_fn(y, m);
+            var mn = $justinmimbs$date$Date$monthToNumber(m);
+            if ((mn < 12) && (_Utils_cmp(d, monthDays) > 0)) {
+                var $temp$y = y, $temp$m = $justinmimbs$date$Date$numberToMonth(mn + 1), $temp$d = d - monthDays;
+                y = $temp$y;
+                m = $temp$m;
+                d = $temp$d;
+                continue toCalendarDateHelp;
+            }
+            else {
+                return { gV: d, hh: m, hI: y };
+            }
+        }
+    }, $justinmimbs$date$Date$toCalendarDateHelp = F3($justinmimbs$date$Date$toCalendarDateHelp_fn);
+    var $justinmimbs$date$Date$floorDiv_fn = function (a, b) {
+        return $elm$core$Basics$floor(a / b);
+    }, $justinmimbs$date$Date$floorDiv = F2($justinmimbs$date$Date$floorDiv_fn);
+    var $justinmimbs$date$Date$daysBeforeYear = function (y1) {
+        var y = y1 - 1;
+        var leapYears = ($justinmimbs$date$Date$floorDiv_fn(y, 4) - $justinmimbs$date$Date$floorDiv_fn(y, 100)) + $justinmimbs$date$Date$floorDiv_fn(y, 400);
+        return (365 * y) + leapYears;
+    };
+    var $justinmimbs$date$Date$divWithRemainder_fn = function (a, b) {
+        return _Utils_Tuple2($justinmimbs$date$Date$floorDiv_fn(a, b), _Basics_modBy_fn(b, a));
+    }, $justinmimbs$date$Date$divWithRemainder = F2($justinmimbs$date$Date$divWithRemainder_fn);
+    var $justinmimbs$date$Date$year = function (_v0) {
+        var rd = _v0;
+        var _v1 = $justinmimbs$date$Date$divWithRemainder_fn(rd, 146097);
+        var n400 = _v1.a;
+        var r400 = _v1.b;
+        var _v2 = $justinmimbs$date$Date$divWithRemainder_fn(r400, 36524);
+        var n100 = _v2.a;
+        var r100 = _v2.b;
+        var _v3 = $justinmimbs$date$Date$divWithRemainder_fn(r100, 1461);
+        var n4 = _v3.a;
+        var r4 = _v3.b;
+        var _v4 = $justinmimbs$date$Date$divWithRemainder_fn(r4, 365);
+        var n1 = _v4.a;
+        var r1 = _v4.b;
+        var n = (!r1) ? 0 : 1;
+        return ((((n400 * 400) + (n100 * 100)) + (n4 * 4)) + n1) + n;
+    };
+    var $justinmimbs$date$Date$toOrdinalDate = function (_v0) {
+        var rd = _v0;
+        var y = $justinmimbs$date$Date$year(rd);
+        return {
+            gw: rd - $justinmimbs$date$Date$daysBeforeYear(y),
+            hI: y
+        };
+    };
+    var $justinmimbs$date$Date$toCalendarDate = function (_v0) {
+        var rd = _v0;
+        var date = $justinmimbs$date$Date$toOrdinalDate(rd);
+        return $justinmimbs$date$Date$toCalendarDateHelp_fn(date.hI, 0, date.gw);
+    };
+    var $justinmimbs$date$Date$day_a0 = $justinmimbs$date$Date$toCalendarDate, $justinmimbs$date$Date$day_a1 = function ($) {
+        return $.gV;
+    }, $justinmimbs$date$Date$day = A2($elm$core$Basics$composeR, $justinmimbs$date$Date$day_a0, $justinmimbs$date$Date$day_a1);
+    var $elm$core$String$slice = _String_slice;
+    var $elm$core$String$left_fn = function (n, string) {
+        return (n < 1) ? "" : _String_slice_fn(0, n, string);
+    }, $elm$core$String$left = F2($elm$core$String$left_fn);
+    var $justinmimbs$date$Date$month_a0 = $justinmimbs$date$Date$toCalendarDate, $justinmimbs$date$Date$month_a1 = function ($) {
+        return $.hh;
+    }, $justinmimbs$date$Date$month = A2($elm$core$Basics$composeR, $justinmimbs$date$Date$month_a0, $justinmimbs$date$Date$month_a1);
+    var $justinmimbs$date$Date$monthNumber_a0 = $justinmimbs$date$Date$month, $justinmimbs$date$Date$monthNumber_a1 = $justinmimbs$date$Date$monthToNumber, $justinmimbs$date$Date$monthNumber = A2($elm$core$Basics$composeR, $justinmimbs$date$Date$monthNumber_a0, $justinmimbs$date$Date$monthNumber_a1);
+    var $justinmimbs$date$Date$ordinalDay_a0 = $justinmimbs$date$Date$toOrdinalDate, $justinmimbs$date$Date$ordinalDay_a1 = function ($) {
+        return $.gw;
+    }, $justinmimbs$date$Date$ordinalDay = A2($elm$core$Basics$composeR, $justinmimbs$date$Date$ordinalDay_a0, $justinmimbs$date$Date$ordinalDay_a1);
+    var $elm$core$Basics$abs = function (n) {
+        return (n < 0) ? (-n) : n;
+    };
+    var $justinmimbs$date$Date$padSignedInt_fn = function (length, _int) {
+        return _Utils_ap((_int < 0) ? "-" : "", $elm$core$String$padLeft_fn(length, "0", $elm$core$String$fromInt($elm$core$Basics$abs(_int))));
+    }, $justinmimbs$date$Date$padSignedInt = F2($justinmimbs$date$Date$padSignedInt_fn);
+    var $justinmimbs$date$Date$monthToQuarter = function (m) {
+        return (($justinmimbs$date$Date$monthToNumber(m) + 2) / 3) | 0;
+    };
+    var $justinmimbs$date$Date$quarter_a0 = $justinmimbs$date$Date$month, $justinmimbs$date$Date$quarter_a1 = $justinmimbs$date$Date$monthToQuarter, $justinmimbs$date$Date$quarter = A2($elm$core$Basics$composeR, $justinmimbs$date$Date$quarter_a0, $justinmimbs$date$Date$quarter_a1);
+    var $elm$core$String$right_fn = function (n, string) {
+        return (n < 1) ? "" : _String_slice_fn(-n, $elm$core$String$length(string), string);
+    }, $elm$core$String$right = F2($elm$core$String$right_fn);
+    var $justinmimbs$date$Date$weekdayNumber = function (_v0) {
+        var rd = _v0;
+        var _v1 = _Basics_modBy_fn(7, rd);
+        if (!_v1) {
+            return 7;
+        }
+        else {
+            var n = _v1;
+            return n;
+        }
+    };
+    var $justinmimbs$date$Date$daysBeforeWeekYear = function (y) {
+        var jan4 = $justinmimbs$date$Date$daysBeforeYear(y) + 4;
+        return jan4 - $justinmimbs$date$Date$weekdayNumber(jan4);
+    };
+    var $elm$time$Time$Fri = 4;
+    var $elm$time$Time$Mon = 0;
+    var $elm$time$Time$Sat = 5;
+    var $elm$time$Time$Sun = 6;
+    var $elm$time$Time$Thu = 3;
+    var $elm$time$Time$Tue = 1;
+    var $elm$time$Time$Wed = 2;
+    var $justinmimbs$date$Date$numberToWeekday = function (wdn) {
+        var _v0 = $elm$core$Basics$max_fn(1, wdn);
+        switch (_v0) {
+            case 1:
+                return 0;
+            case 2:
+                return 1;
+            case 3:
+                return 2;
+            case 4:
+                return 3;
+            case 5:
+                return 4;
+            case 6:
+                return 5;
+            default:
+                return 6;
+        }
+    };
+    var $justinmimbs$date$Date$toWeekDate = function (_v0) {
+        var rd = _v0;
+        var wdn = $justinmimbs$date$Date$weekdayNumber(rd);
+        var wy = $justinmimbs$date$Date$year(rd + (4 - wdn));
+        var week1Day1 = $justinmimbs$date$Date$daysBeforeWeekYear(wy) + 1;
+        return {
+            hG: 1 + (((rd - week1Day1) / 7) | 0),
+            hH: wy,
+            jz: $justinmimbs$date$Date$numberToWeekday(wdn)
+        };
+    };
+    var $justinmimbs$date$Date$weekNumber_a0 = $justinmimbs$date$Date$toWeekDate, $justinmimbs$date$Date$weekNumber_a1 = function ($) {
+        return $.hG;
+    }, $justinmimbs$date$Date$weekNumber = A2($elm$core$Basics$composeR, $justinmimbs$date$Date$weekNumber_a0, $justinmimbs$date$Date$weekNumber_a1);
+    var $justinmimbs$date$Date$weekYear_a0 = $justinmimbs$date$Date$toWeekDate, $justinmimbs$date$Date$weekYear_a1 = function ($) {
+        return $.hH;
+    }, $justinmimbs$date$Date$weekYear = A2($elm$core$Basics$composeR, $justinmimbs$date$Date$weekYear_a0, $justinmimbs$date$Date$weekYear_a1);
+    var $justinmimbs$date$Date$weekday_a0 = $justinmimbs$date$Date$weekdayNumber, $justinmimbs$date$Date$weekday_a1 = $justinmimbs$date$Date$numberToWeekday, $justinmimbs$date$Date$weekday = A2($elm$core$Basics$composeR, $justinmimbs$date$Date$weekday_a0, $justinmimbs$date$Date$weekday_a1);
+    var $elm$core$Basics$min_fn = function (x, y) {
+        return (_Utils_cmp(x, y) < 0) ? x : y;
+    }, $elm$core$Basics$min = F2($elm$core$Basics$min_fn);
+    var $justinmimbs$date$Date$ordinalSuffix = function (n) {
+        var nn = _Basics_modBy_fn(100, n);
+        var _v0 = $elm$core$Basics$min_fn((nn < 20) ? nn : _Basics_modBy_fn(10, nn), 4);
+        switch (_v0) {
+            case 1:
+                return "st";
+            case 2:
+                return "nd";
+            case 3:
+                return "rd";
+            default:
+                return "th";
+        }
+    };
+    var $justinmimbs$date$Date$withOrdinalSuffix = function (n) {
+        return _Utils_ap($elm$core$String$fromInt(n), $justinmimbs$date$Date$ordinalSuffix(n));
+    };
+    var $justinmimbs$date$Date$formatField_fn = function (language, _char, length, date) {
+        switch (_char) {
+            case "y":
+                if (length === 2) {
+                    return $elm$core$String$right_fn(2, $elm$core$String$padLeft_fn(2, "0", $elm$core$String$fromInt($justinmimbs$date$Date$year(date))));
+                }
+                else {
+                    return $justinmimbs$date$Date$padSignedInt_fn(length, $justinmimbs$date$Date$year(date));
+                }
+            case "Y":
+                if (length === 2) {
+                    return $elm$core$String$right_fn(2, $elm$core$String$padLeft_fn(2, "0", $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$weekYear_a0, $justinmimbs$date$Date$weekYear_a1, date))));
+                }
+                else {
+                    return $justinmimbs$date$Date$padSignedInt_fn(length, $elm$core$Basics$composeR_fn($justinmimbs$date$Date$weekYear_a0, $justinmimbs$date$Date$weekYear_a1, date));
+                }
+            case "Q":
+                switch (length) {
+                    case 1:
+                        return $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$quarter_a0, $justinmimbs$date$Date$quarter_a1, date));
+                    case 2:
+                        return $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$quarter_a0, $justinmimbs$date$Date$quarter_a1, date));
+                    case 3:
+                        return "Q" + $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$quarter_a0, $justinmimbs$date$Date$quarter_a1, date));
+                    case 4:
+                        return $justinmimbs$date$Date$withOrdinalSuffix($elm$core$Basics$composeR_fn($justinmimbs$date$Date$quarter_a0, $justinmimbs$date$Date$quarter_a1, date));
+                    case 5:
+                        return $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$quarter_a0, $justinmimbs$date$Date$quarter_a1, date));
+                    default:
+                        return "";
+                }
+            case "M":
+                switch (length) {
+                    case 1:
+                        return $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$monthNumber_a0, $justinmimbs$date$Date$monthNumber_a1, date));
+                    case 2:
+                        return $elm$core$String$padLeft_fn(2, "0", $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$monthNumber_a0, $justinmimbs$date$Date$monthNumber_a1, date)));
+                    case 3:
+                        return language.fi($elm$core$Basics$composeR_fn($justinmimbs$date$Date$month_a0, $justinmimbs$date$Date$month_a1, date));
+                    case 4:
+                        return language.fV($elm$core$Basics$composeR_fn($justinmimbs$date$Date$month_a0, $justinmimbs$date$Date$month_a1, date));
+                    case 5:
+                        return $elm$core$String$left_fn(1, language.fi($elm$core$Basics$composeR_fn($justinmimbs$date$Date$month_a0, $justinmimbs$date$Date$month_a1, date)));
+                    default:
+                        return "";
+                }
+            case "w":
+                switch (length) {
+                    case 1:
+                        return $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$weekNumber_a0, $justinmimbs$date$Date$weekNumber_a1, date));
+                    case 2:
+                        return $elm$core$String$padLeft_fn(2, "0", $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$weekNumber_a0, $justinmimbs$date$Date$weekNumber_a1, date)));
+                    default:
+                        return "";
+                }
+            case "d":
+                switch (length) {
+                    case 1:
+                        return $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$day_a0, $justinmimbs$date$Date$day_a1, date));
+                    case 2:
+                        return $elm$core$String$padLeft_fn(2, "0", $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$day_a0, $justinmimbs$date$Date$day_a1, date)));
+                    case 3:
+                        return language.fK($elm$core$Basics$composeR_fn($justinmimbs$date$Date$day_a0, $justinmimbs$date$Date$day_a1, date));
+                    default:
+                        return "";
+                }
+            case "D":
+                switch (length) {
+                    case 1:
+                        return $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$ordinalDay_a0, $justinmimbs$date$Date$ordinalDay_a1, date));
+                    case 2:
+                        return $elm$core$String$padLeft_fn(2, "0", $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$ordinalDay_a0, $justinmimbs$date$Date$ordinalDay_a1, date)));
+                    case 3:
+                        return $elm$core$String$padLeft_fn(3, "0", $elm$core$String$fromInt($elm$core$Basics$composeR_fn($justinmimbs$date$Date$ordinalDay_a0, $justinmimbs$date$Date$ordinalDay_a1, date)));
+                    default:
+                        return "";
+                }
+            case "E":
+                switch (length) {
+                    case 1:
+                        return language.c4($elm$core$Basics$composeR_fn($justinmimbs$date$Date$weekday_a0, $justinmimbs$date$Date$weekday_a1, date));
+                    case 2:
+                        return language.c4($elm$core$Basics$composeR_fn($justinmimbs$date$Date$weekday_a0, $justinmimbs$date$Date$weekday_a1, date));
+                    case 3:
+                        return language.c4($elm$core$Basics$composeR_fn($justinmimbs$date$Date$weekday_a0, $justinmimbs$date$Date$weekday_a1, date));
+                    case 4:
+                        return language.gi($elm$core$Basics$composeR_fn($justinmimbs$date$Date$weekday_a0, $justinmimbs$date$Date$weekday_a1, date));
+                    case 5:
+                        return $elm$core$String$left_fn(1, language.c4($elm$core$Basics$composeR_fn($justinmimbs$date$Date$weekday_a0, $justinmimbs$date$Date$weekday_a1, date)));
+                    case 6:
+                        return $elm$core$String$left_fn(2, language.c4($elm$core$Basics$composeR_fn($justinmimbs$date$Date$weekday_a0, $justinmimbs$date$Date$weekday_a1, date)));
+                    default:
+                        return "";
+                }
+            case "e":
+                switch (length) {
+                    case 1:
+                        return $elm$core$String$fromInt($justinmimbs$date$Date$weekdayNumber(date));
+                    case 2:
+                        return $elm$core$String$fromInt($justinmimbs$date$Date$weekdayNumber(date));
+                    default:
+                        return $justinmimbs$date$Date$formatField_fn(language, "E", length, date);
+                }
+            default:
+                return "";
+        }
+    }, $justinmimbs$date$Date$formatField = F4($justinmimbs$date$Date$formatField_fn);
+    var $justinmimbs$date$Date$formatWithTokens_fn = function (language, tokens, date) {
+        return $elm$core$List$foldl_fn_unwrapped(function (token, formatted) {
+            if (!token.$) {
+                var _char = token.a;
+                var length = token.b;
+                return _Utils_ap($justinmimbs$date$Date$formatField_fn(language, _char, length, date), formatted);
+            }
+            else {
+                var str = token.a;
+                return _Utils_ap(str, formatted);
+            }
+        }, "", tokens);
+    }, $justinmimbs$date$Date$formatWithTokens = F3($justinmimbs$date$Date$formatWithTokens_fn);
+    var $justinmimbs$date$Pattern$Literal = function (a) {
+        return { $: 1, a: a };
+    };
+    var $elm$parser$Parser$Advanced$Bad_fn = function (a, b) {
+        return { $: 1, a: a, b: b };
+    }, $elm$parser$Parser$Advanced$Bad = F2($elm$parser$Parser$Advanced$Bad_fn);
+    var $elm$parser$Parser$Advanced$Good_fn = function (a, b, c) {
+        return { $: 0, a: a, b: b, c: c };
+    }, $elm$parser$Parser$Advanced$Good = F3($elm$parser$Parser$Advanced$Good_fn);
+    var $elm$parser$Parser$Advanced$Parser = $elm$core$Basics$identity;
+    var $elm$parser$Parser$Advanced$andThen_fn = function (callback, _v0) {
+        var parseA = _v0;
+        return function (s0) {
+            var _v1 = parseA(s0);
+            if (_v1.$ === 1) {
+                var p = _v1.a;
+                var x = _v1.b;
+                return $elm$parser$Parser$Advanced$Bad_fn(p, x);
+            }
+            else {
+                var p1 = _v1.a;
+                var a = _v1.b;
+                var s1 = _v1.c;
+                var _v2 = callback(a);
+                var parseB = _v2;
+                var _v3 = parseB(s1);
+                if (_v3.$ === 1) {
+                    var p2 = _v3.a;
+                    var x = _v3.b;
+                    return $elm$parser$Parser$Advanced$Bad_fn(p1 || p2, x);
+                }
+                else {
+                    var p2 = _v3.a;
+                    var b = _v3.b;
+                    var s2 = _v3.c;
+                    return $elm$parser$Parser$Advanced$Good_fn(p1 || p2, b, s2);
+                }
+            }
+        };
+    }, $elm$parser$Parser$Advanced$andThen = F2($elm$parser$Parser$Advanced$andThen_fn);
+    var $elm$parser$Parser$andThen = $elm$parser$Parser$Advanced$andThen;
+    var $elm$core$Basics$always_fn = function (a, _v0) {
+        return a;
+    }, $elm$core$Basics$always = F2($elm$core$Basics$always_fn);
+    var $elm$parser$Parser$Advanced$map2_fn = function (func, _v0, _v1) {
+        var parseA = _v0;
+        var parseB = _v1;
+        return function (s0) {
+            var _v2 = parseA(s0);
+            if (_v2.$ === 1) {
+                var p = _v2.a;
+                var x = _v2.b;
+                return $elm$parser$Parser$Advanced$Bad_fn(p, x);
+            }
+            else {
+                var p1 = _v2.a;
+                var a = _v2.b;
+                var s1 = _v2.c;
+                var _v3 = parseB(s1);
+                if (_v3.$ === 1) {
+                    var p2 = _v3.a;
+                    var x = _v3.b;
+                    return $elm$parser$Parser$Advanced$Bad_fn(p1 || p2, x);
+                }
+                else {
+                    var p2 = _v3.a;
+                    var b = _v3.b;
+                    var s2 = _v3.c;
+                    return $elm$parser$Parser$Advanced$Good_fn(p1 || p2, A2(func, a, b), s2);
+                }
+            }
+        };
+    }, $elm$parser$Parser$Advanced$map2_fn_unwrapped = function (func, _v0, _v1) {
+        var parseA = _v0;
+        var parseB = _v1;
+        return function (s0) {
+            var _v2 = parseA(s0);
+            if (_v2.$ === 1) {
+                var p = _v2.a;
+                var x = _v2.b;
+                return $elm$parser$Parser$Advanced$Bad_fn(p, x);
+            }
+            else {
+                var p1 = _v2.a;
+                var a = _v2.b;
+                var s1 = _v2.c;
+                var _v3 = parseB(s1);
+                if (_v3.$ === 1) {
+                    var p2 = _v3.a;
+                    var x = _v3.b;
+                    return $elm$parser$Parser$Advanced$Bad_fn(p1 || p2, x);
+                }
+                else {
+                    var p2 = _v3.a;
+                    var b = _v3.b;
+                    var s2 = _v3.c;
+                    return $elm$parser$Parser$Advanced$Good_fn(p1 || p2, func(a, b), s2);
+                }
+            }
+        };
+    }, $elm$parser$Parser$Advanced$map2 = F3($elm$parser$Parser$Advanced$map2_fn);
+    var $elm$parser$Parser$Advanced$ignorer_fn = function (keepParser, ignoreParser) {
+        return $elm$parser$Parser$Advanced$map2_fn($elm$core$Basics$always, keepParser, ignoreParser);
+    }, $elm$parser$Parser$Advanced$ignorer = F2($elm$parser$Parser$Advanced$ignorer_fn);
+    var $elm$parser$Parser$ignorer = $elm$parser$Parser$Advanced$ignorer;
+    var $elm$parser$Parser$Advanced$succeed = function (a) {
+        return function (s) {
+            return $elm$parser$Parser$Advanced$Good_fn(false, a, s);
+        };
+    };
+    var $elm$parser$Parser$succeed = $elm$parser$Parser$Advanced$succeed;
+    var $elm$parser$Parser$Expecting = function (a) {
+        return { $: 0, a: a };
+    };
+    var $elm$parser$Parser$Advanced$Token_fn = function (a, b) {
+        return { $: 0, a: a, b: b };
+    }, $elm$parser$Parser$Advanced$Token = F2($elm$parser$Parser$Advanced$Token_fn);
+    var $elm$parser$Parser$toToken = function (str) {
+        return $elm$parser$Parser$Advanced$Token_fn(str, $elm$parser$Parser$Expecting(str));
+    };
+    var $elm$parser$Parser$Advanced$AddRight_fn = function (a, b) {
+        return { $: 1, a: a, b: b };
+    }, $elm$parser$Parser$Advanced$AddRight = F2($elm$parser$Parser$Advanced$AddRight_fn);
+    var $elm$parser$Parser$Advanced$DeadEnd_fn = function (row, col, problem, contextStack) {
+        return { dU: col, eW: contextStack, i4: problem, jh: row };
+    }, $elm$parser$Parser$Advanced$DeadEnd = F4($elm$parser$Parser$Advanced$DeadEnd_fn);
+    var $elm$parser$Parser$Advanced$Empty = { $: 0 };
+    var $elm$parser$Parser$Advanced$fromState_fn = function (s, x) {
+        return $elm$parser$Parser$Advanced$AddRight_fn($elm$parser$Parser$Advanced$Empty, $elm$parser$Parser$Advanced$DeadEnd_fn(s.jh, s.dU, x, s.g));
+    }, $elm$parser$Parser$Advanced$fromState = F2($elm$parser$Parser$Advanced$fromState_fn);
+    var $elm$core$String$isEmpty = function (string) {
+        return string === "";
+    };
+    var $elm$parser$Parser$Advanced$isSubString = _Parser_isSubString;
+    var $elm$core$Basics$not = _Basics_not;
+    var $elm$parser$Parser$Advanced$token = function (_v0) {
+        var str = _v0.a;
+        var expecting = _v0.b;
+        var progress = !$elm$core$String$isEmpty(str);
+        return function (s) {
+            var _v1 = _Parser_isSubString_fn(str, s.f, s.jh, s.dU, s.ey);
+            var newOffset = _v1.a;
+            var newRow = _v1.b;
+            var newCol = _v1.c;
+            return newOffset === -1 ? $elm$parser$Parser$Advanced$Bad_fn(false, $elm$parser$Parser$Advanced$fromState_fn(s, expecting)) : $elm$parser$Parser$Advanced$Good_fn(progress, 0, { dU: newCol, g: s.g, n: s.n, f: newOffset, jh: newRow, ey: s.ey });
+        };
+    };
+    var $elm$parser$Parser$token = function (str) {
+        return $elm$parser$Parser$Advanced$token($elm$parser$Parser$toToken(str));
+    };
+    var $justinmimbs$date$Pattern$escapedQuote = $elm$parser$Parser$Advanced$ignorer_fn($elm$parser$Parser$succeed($justinmimbs$date$Pattern$Literal("'")), $elm$parser$Parser$token("''"));
+    var $elm$parser$Parser$UnexpectedChar = { $: 11 };
+    var $elm$parser$Parser$Advanced$isSubChar = _Parser_isSubChar;
+    var $elm$parser$Parser$Advanced$chompIf_fn = function (isGood, expecting) {
+        return function (s) {
+            var newOffset = _Parser_isSubChar_fn(isGood, s.f, s.ey);
+            return newOffset === -1 ? $elm$parser$Parser$Advanced$Bad_fn(false, $elm$parser$Parser$Advanced$fromState_fn(s, expecting)) : (newOffset === -2 ? $elm$parser$Parser$Advanced$Good_fn(true, 0, { dU: 1, g: s.g, n: s.n, f: s.f + 1, jh: s.jh + 1, ey: s.ey }) : $elm$parser$Parser$Advanced$Good_fn(true, 0, { dU: s.dU + 1, g: s.g, n: s.n, f: newOffset, jh: s.jh, ey: s.ey }));
+        };
+    }, $elm$parser$Parser$Advanced$chompIf = F2($elm$parser$Parser$Advanced$chompIf_fn);
+    var $elm$parser$Parser$chompIf = function (isGood) {
+        return $elm$parser$Parser$Advanced$chompIf_fn(isGood, $elm$parser$Parser$UnexpectedChar);
+    };
+    var $justinmimbs$date$Pattern$Field_fn = function (a, b) {
+        return { $: 0, a: a, b: b };
+    }, $justinmimbs$date$Pattern$Field = F2($justinmimbs$date$Pattern$Field_fn);
+    var $elm$parser$Parser$Advanced$chompWhileHelp_fn = function (isGood, offset, row, col, s0) {
+        chompWhileHelp: while (true) {
+            var newOffset = _Parser_isSubChar_fn(isGood, offset, s0.ey);
+            if (newOffset === -1) {
+                return $elm$parser$Parser$Advanced$Good_fn(_Utils_cmp(s0.f, offset) < 0, 0, { dU: col, g: s0.g, n: s0.n, f: offset, jh: row, ey: s0.ey });
+            }
+            else {
+                if (newOffset === -2) {
+                    var $temp$isGood = isGood, $temp$offset = offset + 1, $temp$row = row + 1, $temp$col = 1, $temp$s0 = s0;
+                    isGood = $temp$isGood;
+                    offset = $temp$offset;
+                    row = $temp$row;
+                    col = $temp$col;
+                    s0 = $temp$s0;
+                    continue chompWhileHelp;
+                }
+                else {
+                    var $temp$isGood = isGood, $temp$offset = newOffset, $temp$row = row, $temp$col = col + 1, $temp$s0 = s0;
+                    isGood = $temp$isGood;
+                    offset = $temp$offset;
+                    row = $temp$row;
+                    col = $temp$col;
+                    s0 = $temp$s0;
+                    continue chompWhileHelp;
+                }
+            }
+        }
+    }, $elm$parser$Parser$Advanced$chompWhileHelp = F5($elm$parser$Parser$Advanced$chompWhileHelp_fn);
+    var $elm$parser$Parser$Advanced$chompWhile = function (isGood) {
+        return function (s) {
+            return $elm$parser$Parser$Advanced$chompWhileHelp_fn(isGood, s.f, s.jh, s.dU, s);
+        };
+    };
+    var $elm$parser$Parser$chompWhile = $elm$parser$Parser$Advanced$chompWhile;
+    var $elm$parser$Parser$Advanced$getOffset = function (s) {
+        return $elm$parser$Parser$Advanced$Good_fn(false, s.f, s);
+    };
+    var $elm$parser$Parser$getOffset = $elm$parser$Parser$Advanced$getOffset;
+    var $elm$parser$Parser$Advanced$keeper_fn = function (parseFunc, parseArg) {
+        return $elm$parser$Parser$Advanced$map2_fn($elm$core$Basics$apL, parseFunc, parseArg);
+    }, $elm$parser$Parser$Advanced$keeper = F2($elm$parser$Parser$Advanced$keeper_fn);
+    var $elm$parser$Parser$keeper = $elm$parser$Parser$Advanced$keeper;
+    var $elm$parser$Parser$Problem = function (a) {
+        return { $: 12, a: a };
+    };
+    var $elm$parser$Parser$Advanced$problem = function (x) {
+        return function (s) {
+            return $elm$parser$Parser$Advanced$Bad_fn(false, $elm$parser$Parser$Advanced$fromState_fn(s, x));
+        };
+    };
+    var $elm$parser$Parser$problem = function (msg) {
+        return $elm$parser$Parser$Advanced$problem($elm$parser$Parser$Problem(msg));
+    };
+    var $elm$core$String$foldr = _String_foldr;
+    var $elm$core$String$toList = function (string) {
+        return _String_foldr_fn($elm$core$List$cons, _List_Nil, string);
+    };
+    var $justinmimbs$date$Pattern$fieldRepeats = function (str) {
+        var _v0 = $elm$core$String$toList(str);
+        if (_v0.b && (!_v0.b.b)) {
+            var _char = _v0.a;
+            return $elm$parser$Parser$Advanced$keeper_fn($elm$parser$Parser$Advanced$keeper_fn($elm$parser$Parser$succeed(F2(function (x, y) {
+                return $justinmimbs$date$Pattern$Field_fn(_char, 1 + (y - x));
+            })), $elm$parser$Parser$Advanced$ignorer_fn($elm$parser$Parser$getOffset, $elm$parser$Parser$chompWhile($elm$core$Basics$eq(_char)))), $elm$parser$Parser$getOffset);
+        }
+        else {
+            return $elm$parser$Parser$problem("expected exactly one char");
+        }
+    };
+    var $elm$parser$Parser$Advanced$mapChompedString_fn = function (func, _v0) {
+        var parse = _v0;
+        return function (s0) {
+            var _v1 = parse(s0);
+            if (_v1.$ === 1) {
+                var p = _v1.a;
+                var x = _v1.b;
+                return $elm$parser$Parser$Advanced$Bad_fn(p, x);
+            }
+            else {
+                var p = _v1.a;
+                var a = _v1.b;
+                var s1 = _v1.c;
+                return $elm$parser$Parser$Advanced$Good_fn(p, A2(func, _String_slice_fn(s0.f, s1.f, s0.ey), a), s1);
+            }
+        };
+    }, $elm$parser$Parser$Advanced$mapChompedString_fn_unwrapped = function (func, _v0) {
+        var parse = _v0;
+        return function (s0) {
+            var _v1 = parse(s0);
+            if (_v1.$ === 1) {
+                var p = _v1.a;
+                var x = _v1.b;
+                return $elm$parser$Parser$Advanced$Bad_fn(p, x);
+            }
+            else {
+                var p = _v1.a;
+                var a = _v1.b;
+                var s1 = _v1.c;
+                return $elm$parser$Parser$Advanced$Good_fn(p, func(_String_slice_fn(s0.f, s1.f, s0.ey), a), s1);
+            }
+        };
+    }, $elm$parser$Parser$Advanced$mapChompedString = F2($elm$parser$Parser$Advanced$mapChompedString_fn);
+    var $elm$parser$Parser$Advanced$getChompedString = function (parser) {
+        return $elm$parser$Parser$Advanced$mapChompedString_fn($elm$core$Basics$always, parser);
+    };
+    var $elm$parser$Parser$getChompedString = $elm$parser$Parser$Advanced$getChompedString;
+    var $justinmimbs$date$Pattern$field = $elm$parser$Parser$Advanced$andThen_fn($justinmimbs$date$Pattern$fieldRepeats, $elm$parser$Parser$getChompedString($elm$parser$Parser$chompIf($elm$core$Char$isAlpha)));
+    var $justinmimbs$date$Pattern$finalize_a0 = F2(function (token, tokens) {
+        var _v0 = _Utils_Tuple2(token, tokens);
+        if (((_v0.a.$ === 1) && _v0.b.b) && (_v0.b.a.$ === 1)) {
+            var x = _v0.a.a;
+            var _v1 = _v0.b;
+            var y = _v1.a.a;
+            var rest = _v1.b;
+            return _List_Cons($justinmimbs$date$Pattern$Literal(_Utils_ap(x, y)), rest);
+        }
+        else {
+            return _List_Cons(token, tokens);
+        }
+    }), $justinmimbs$date$Pattern$finalize_a1 = _List_Nil, $justinmimbs$date$Pattern$finalize = A2($elm$core$List$foldl, $justinmimbs$date$Pattern$finalize_a0, $justinmimbs$date$Pattern$finalize_a1);
+    var $elm$parser$Parser$Advanced$lazy = function (thunk) {
+        return function (s) {
+            var _v0 = thunk(0);
+            var parse = _v0;
+            return parse(s);
+        };
+    };
+    var $elm$parser$Parser$lazy = $elm$parser$Parser$Advanced$lazy;
+    var $justinmimbs$date$Pattern$isLiteralChar = function (_char) {
+        return (_char !== "'") && (!$elm$core$Char$isAlpha(_char));
+    };
+    var $elm$parser$Parser$Advanced$map_fn = function (func, _v0) {
+        var parse = _v0;
+        return function (s0) {
+            var _v1 = parse(s0);
+            if (!_v1.$) {
+                var p = _v1.a;
+                var a = _v1.b;
+                var s1 = _v1.c;
+                return $elm$parser$Parser$Advanced$Good_fn(p, func(a), s1);
+            }
+            else {
+                var p = _v1.a;
+                var x = _v1.b;
+                return $elm$parser$Parser$Advanced$Bad_fn(p, x);
+            }
+        };
+    }, $elm$parser$Parser$Advanced$map = F2($elm$parser$Parser$Advanced$map_fn);
+    var $elm$parser$Parser$map = $elm$parser$Parser$Advanced$map;
+    var $justinmimbs$date$Pattern$literal = $elm$parser$Parser$Advanced$map_fn($justinmimbs$date$Pattern$Literal, $elm$parser$Parser$getChompedString($elm$parser$Parser$Advanced$ignorer_fn($elm$parser$Parser$Advanced$ignorer_fn($elm$parser$Parser$succeed(0), $elm$parser$Parser$chompIf($justinmimbs$date$Pattern$isLiteralChar)), $elm$parser$Parser$chompWhile($justinmimbs$date$Pattern$isLiteralChar))));
+    var $elm$parser$Parser$Advanced$Append_fn = function (a, b) {
+        return { $: 2, a: a, b: b };
+    }, $elm$parser$Parser$Advanced$Append = F2($elm$parser$Parser$Advanced$Append_fn);
+    var $elm$parser$Parser$Advanced$oneOfHelp_fn = function (s0, bag, parsers) {
+        oneOfHelp: while (true) {
+            if (!parsers.b) {
+                return $elm$parser$Parser$Advanced$Bad_fn(false, bag);
+            }
+            else {
+                var parse = parsers.a;
+                var remainingParsers = parsers.b;
+                var _v1 = parse(s0);
+                if (!_v1.$) {
+                    var step = _v1;
+                    return step;
+                }
+                else {
+                    var step = _v1;
+                    var p = step.a;
+                    var x = step.b;
+                    if (p) {
+                        return step;
+                    }
+                    else {
+                        var $temp$s0 = s0, $temp$bag = $elm$parser$Parser$Advanced$Append_fn(bag, x), $temp$parsers = remainingParsers;
+                        s0 = $temp$s0;
+                        bag = $temp$bag;
+                        parsers = $temp$parsers;
+                        continue oneOfHelp;
+                    }
+                }
+            }
+        }
+    }, $elm$parser$Parser$Advanced$oneOfHelp = F3($elm$parser$Parser$Advanced$oneOfHelp_fn);
+    var $elm$parser$Parser$Advanced$oneOf = function (parsers) {
+        return function (s) {
+            return $elm$parser$Parser$Advanced$oneOfHelp_fn(s, $elm$parser$Parser$Advanced$Empty, parsers);
+        };
+    };
+    var $elm$parser$Parser$oneOf = $elm$parser$Parser$Advanced$oneOf;
+    var $elm$parser$Parser$ExpectingEnd = { $: 10 };
+    var $elm$parser$Parser$Advanced$end = function (x) {
+        return function (s) {
+            return _Utils_eq($elm$core$String$length(s.ey), s.f) ? $elm$parser$Parser$Advanced$Good_fn(false, 0, s) : $elm$parser$Parser$Advanced$Bad_fn(false, $elm$parser$Parser$Advanced$fromState_fn(s, x));
+        };
+    };
+    var $elm$parser$Parser$end = $elm$parser$Parser$Advanced$end($elm$parser$Parser$ExpectingEnd);
+    var $justinmimbs$date$Pattern$quotedHelp = function (result) {
+        return $elm$parser$Parser$oneOf(_List_fromArray([
+            $elm$parser$Parser$Advanced$andThen_fn(function (str) {
+                return $justinmimbs$date$Pattern$quotedHelp(_Utils_ap(result, str));
+            }, $elm$parser$Parser$getChompedString($elm$parser$Parser$Advanced$ignorer_fn($elm$parser$Parser$Advanced$ignorer_fn($elm$parser$Parser$succeed(0), $elm$parser$Parser$chompIf($elm$core$Basics$neq("'"))), $elm$parser$Parser$chompWhile($elm$core$Basics$neq("'"))))),
+            $elm$parser$Parser$Advanced$andThen_fn(function (_v0) {
+                return $justinmimbs$date$Pattern$quotedHelp(result + "'");
+            }, $elm$parser$Parser$token("''")),
+            $elm$parser$Parser$succeed(result)
+        ]));
+    };
+    var $justinmimbs$date$Pattern$quoted = $elm$parser$Parser$Advanced$keeper_fn($elm$parser$Parser$Advanced$ignorer_fn($elm$parser$Parser$succeed($justinmimbs$date$Pattern$Literal), $elm$parser$Parser$chompIf($elm$core$Basics$eq("'"))), $elm$parser$Parser$Advanced$ignorer_fn($justinmimbs$date$Pattern$quotedHelp(""), $elm$parser$Parser$oneOf(_List_fromArray([
+        $elm$parser$Parser$chompIf($elm$core$Basics$eq("'")),
+        $elm$parser$Parser$end
+    ]))));
+    var $justinmimbs$date$Pattern$patternHelp = function (tokens) {
+        return $elm$parser$Parser$oneOf(_List_fromArray([
+            $elm$parser$Parser$Advanced$andThen_fn(function (token) {
+                return $justinmimbs$date$Pattern$patternHelp(_List_Cons(token, tokens));
+            }, $elm$parser$Parser$oneOf(_List_fromArray([$justinmimbs$date$Pattern$field, $justinmimbs$date$Pattern$literal, $justinmimbs$date$Pattern$escapedQuote, $justinmimbs$date$Pattern$quoted]))),
+            $elm$parser$Parser$lazy(function (_v0) {
+                return $elm$parser$Parser$succeed($elm$core$List$foldl_fn($justinmimbs$date$Pattern$finalize_a0, $justinmimbs$date$Pattern$finalize_a1, tokens));
+            })
+        ]));
+    };
+    var $elm$core$List$map_fn = function (f, xs) {
+        return $elm$core$List$foldr_fn(F2(function (x, acc) {
+            return _List_Cons(f(x), acc);
+        }), _List_Nil, xs);
+    }, $elm$core$List$map = F2($elm$core$List$map_fn);
+    var $elm$parser$Parser$DeadEnd_fn = function (row, col, problem) {
+        return { dU: col, i4: problem, jh: row };
+    }, $elm$parser$Parser$DeadEnd = F3($elm$parser$Parser$DeadEnd_fn);
+    var $elm$parser$Parser$problemToDeadEnd = function (p) {
+        return $elm$parser$Parser$DeadEnd_fn(p.jh, p.dU, p.i4);
+    };
+    var $elm$parser$Parser$Advanced$bagToList_fn = function (bag, list) {
+        bagToList: while (true) {
+            switch (bag.$) {
+                case 0:
+                    return list;
+                case 1:
+                    var bag1 = bag.a;
+                    var x = bag.b;
+                    var $temp$bag = bag1, $temp$list = _List_Cons(x, list);
+                    bag = $temp$bag;
+                    list = $temp$list;
+                    continue bagToList;
+                default:
+                    var bag1 = bag.a;
+                    var bag2 = bag.b;
+                    var $temp$bag = bag1, $temp$list = $elm$parser$Parser$Advanced$bagToList_fn(bag2, list);
+                    bag = $temp$bag;
+                    list = $temp$list;
+                    continue bagToList;
+            }
+        }
+    }, $elm$parser$Parser$Advanced$bagToList = F2($elm$parser$Parser$Advanced$bagToList_fn);
+    var $elm$parser$Parser$Advanced$run_fn = function (_v0, src) {
+        var parse = _v0;
+        var _v1 = parse({ dU: 1, g: _List_Nil, n: 1, f: 0, jh: 1, ey: src });
+        if (!_v1.$) {
+            var value = _v1.b;
+            return $elm$core$Result$Ok(value);
+        }
+        else {
+            var bag = _v1.b;
+            return $elm$core$Result$Err($elm$parser$Parser$Advanced$bagToList_fn(bag, _List_Nil));
+        }
+    }, $elm$parser$Parser$Advanced$run = F2($elm$parser$Parser$Advanced$run_fn);
+    var $elm$parser$Parser$run_fn = function (parser, source) {
+        var _v0 = $elm$parser$Parser$Advanced$run_fn(parser, source);
+        if (!_v0.$) {
+            var a = _v0.a;
+            return $elm$core$Result$Ok(a);
+        }
+        else {
+            var problems = _v0.a;
+            return $elm$core$Result$Err($elm$core$List$map_fn($elm$parser$Parser$problemToDeadEnd, problems));
+        }
+    }, $elm$parser$Parser$run = F2($elm$parser$Parser$run_fn);
+    var $elm$core$Result$withDefault_fn = function (def, result) {
+        if (!result.$) {
+            var a = result.a;
+            return a;
+        }
+        else {
+            return def;
+        }
+    }, $elm$core$Result$withDefault = F2($elm$core$Result$withDefault_fn);
+    var $justinmimbs$date$Pattern$fromString = function (str) {
+        return $elm$core$Result$withDefault_fn(_List_fromArray([
+            $justinmimbs$date$Pattern$Literal(str)
+        ]), $elm$parser$Parser$run_fn($justinmimbs$date$Pattern$patternHelp(_List_Nil), str));
+    };
+    var $justinmimbs$date$Date$formatWithLanguage_fn = function (language, pattern) {
+        var tokens = $elm$core$List$reverse($justinmimbs$date$Pattern$fromString(pattern));
+        return A2($justinmimbs$date$Date$formatWithTokens, language, tokens);
+    }, $justinmimbs$date$Date$formatWithLanguage = F2($justinmimbs$date$Date$formatWithLanguage_fn);
+    var $justinmimbs$date$Date$monthToName = function (m) {
+        switch (m) {
+            case 0:
+                return "January";
+            case 1:
+                return "February";
+            case 2:
+                return "March";
+            case 3:
+                return "April";
+            case 4:
+                return "May";
+            case 5:
+                return "June";
+            case 6:
+                return "July";
+            case 7:
+                return "August";
+            case 8:
+                return "September";
+            case 9:
+                return "October";
+            case 10:
+                return "November";
+            default:
+                return "December";
+        }
+    };
+    var $justinmimbs$date$Date$weekdayToName = function (wd) {
+        switch (wd) {
+            case 0:
+                return "Monday";
+            case 1:
+                return "Tuesday";
+            case 2:
+                return "Wednesday";
+            case 3:
+                return "Thursday";
+            case 4:
+                return "Friday";
+            case 5:
+                return "Saturday";
+            default:
+                return "Sunday";
+        }
+    };
+    var $justinmimbs$date$Date$language_en = {
+        fK: $justinmimbs$date$Date$withOrdinalSuffix,
+        fV: $justinmimbs$date$Date$monthToName,
+        fi: A2($elm$core$Basics$composeR, $justinmimbs$date$Date$monthToName, $elm$core$String$left(3)),
+        gi: $justinmimbs$date$Date$weekdayToName,
+        c4: A2($elm$core$Basics$composeR, $justinmimbs$date$Date$weekdayToName, $elm$core$String$left(3))
+    };
+    var $justinmimbs$date$Date$format = function (pattern) {
+        return $justinmimbs$date$Date$formatWithLanguage_fn($justinmimbs$date$Date$language_en, pattern);
+    };
+    var $justinmimbs$date$Date$toIsoString = $justinmimbs$date$Date$format("yyyy-MM-dd");
+    var $author$project$Head$Seo$dateOrDateTimeToString = function (dateOrTime) {
+        if (!dateOrTime.$) {
+            var date = dateOrTime.a;
+            return $justinmimbs$date$Date$toIsoString(date);
+        }
+        else {
+            var posix = dateOrTime.a;
+            return $rtfeldman$elm_iso8601_date_strings$Iso8601$fromTime(posix);
+        }
+    };
     var $elm$core$List$maybeCons_fn = function (f, mx, xs) {
         var _v0 = f(mx);
         if (!_v0.$) {
@@ -4144,11 +5295,6 @@
     var $elm$core$List$filterMap_fn = function (f, xs) {
         return $elm$core$List$foldr_fn($elm$core$List$maybeCons(f), _List_Nil, xs);
     }, $elm$core$List$filterMap = F2($elm$core$List$filterMap_fn);
-    var $elm$core$List$map_fn = function (f, xs) {
-        return $elm$core$List$foldr_fn(F2(function (x, acc) {
-            return _List_Cons(f(x), acc);
-        }), _List_Nil, xs);
-    }, $elm$core$List$map = F2($elm$core$List$map_fn);
     var $author$project$Head$metaName_fn = function (name, content) {
         return $author$project$Head$node_fn("meta", _List_fromArray([
             _Utils_Tuple2("name", $author$project$Head$Raw(name)),
@@ -4205,7 +5351,7 @@
                     return _List_fromArray([
                         _Utils_Tuple2("twitter:title", $elm$core$Maybe$Just($author$project$Head$raw(details.b9))),
                         _Utils_Tuple2("twitter:site", $elm$core$Maybe$map_fn($author$project$Head$raw, details.gH)),
-                        _Utils_Tuple2("twitter:description", $elm$core$Maybe$map_fn($author$project$Head$raw, details.af)),
+                        _Utils_Tuple2("twitter:description", $elm$core$Maybe$map_fn($author$project$Head$raw, details.ag)),
                         _Utils_Tuple2("twitter:image", $elm$core$Maybe$map_fn($author$project$Head$urlAttribute, $elm$core$Maybe$map_fn(function ($) {
                             return $.fy;
                         }, details.at))),
@@ -4218,7 +5364,7 @@
                     return _List_fromArray([
                         _Utils_Tuple2("twitter:title", $elm$core$Maybe$Just($author$project$Head$raw(details.b9))),
                         _Utils_Tuple2("twitter:site", $elm$core$Maybe$Just($author$project$Head$raw(details.gH))),
-                        _Utils_Tuple2("twitter:description", $elm$core$Maybe$map_fn($author$project$Head$raw, details.af)),
+                        _Utils_Tuple2("twitter:description", $elm$core$Maybe$map_fn($author$project$Head$raw, details.ag)),
                         _Utils_Tuple2("twitter:image", $elm$core$Maybe$map_fn($author$project$Head$urlAttribute, $elm$core$Maybe$map_fn(function ($) {
                             return $.fy;
                         }, details.at))),
@@ -4241,18 +5387,106 @@
                     return _List_fromArray([
                         _Utils_Tuple2("twitter:title", $elm$core$Maybe$Just($author$project$Head$raw(details.b9))),
                         _Utils_Tuple2("twitter:site", $elm$core$Maybe$Just($author$project$Head$raw(details.gH))),
-                        _Utils_Tuple2("twitter:description", $elm$core$Maybe$map_fn($author$project$Head$raw, details.af)),
+                        _Utils_Tuple2("twitter:description", $elm$core$Maybe$map_fn($author$project$Head$raw, details.ag)),
                         _Utils_Tuple2("twitter:image", $elm$core$Maybe$Just($author$project$Head$urlAttribute(details.at.fy))),
                         _Utils_Tuple2("twitter:image:alt", $elm$core$Maybe$Just($author$project$Head$raw(details.at.aT)))
                     ]);
             }
         }());
     };
+    var $danyx23$elm_mimetype$MimeType$toString = function (mimeType) {
+        switch (mimeType.$) {
+            case 0:
+                var img = mimeType.a;
+                switch (img.$) {
+                    case 0:
+                        return "image/jpeg";
+                    case 1:
+                        return "image/png";
+                    case 2:
+                        return "image/gif";
+                    default:
+                        var type_ = img.a;
+                        return "image/" + type_;
+                }
+            case 1:
+                var audio = mimeType.a;
+                switch (audio.$) {
+                    case 0:
+                        return "audio/mp3";
+                    case 2:
+                        return "audio/wav";
+                    case 1:
+                        return "audio/ogg";
+                    default:
+                        var type_ = audio.a;
+                        return "audio/" + type_;
+                }
+            case 2:
+                var video = mimeType.a;
+                switch (video.$) {
+                    case 0:
+                        return "video/mp4";
+                    case 1:
+                        return "video/mpeg";
+                    case 2:
+                        return "video/quicktime";
+                    case 3:
+                        return "video/avi";
+                    case 4:
+                        return "video/webm";
+                    default:
+                        var type_ = video.a;
+                        return "video/" + type_;
+                }
+            case 3:
+                var text = mimeType.a;
+                switch (text.$) {
+                    case 0:
+                        return "text/plain";
+                    case 1:
+                        return "text/html";
+                    case 2:
+                        return "text/css";
+                    case 3:
+                        return "text/xml";
+                    case 4:
+                        return "application/json";
+                    default:
+                        var type_ = text.a;
+                        return "text/" + type_;
+                }
+            case 4:
+                var app = mimeType.a;
+                switch (app.$) {
+                    case 0:
+                        return "application/msword";
+                    case 1:
+                        return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    case 2:
+                        return "application/vnd.ms-excel";
+                    case 3:
+                        return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    case 4:
+                        return "application/vnd.ms-powerpoint";
+                    case 5:
+                        return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+                    case 6:
+                        return "application/pdf";
+                    default:
+                        var type_ = app.a;
+                        return "application/" + type_;
+                }
+            default:
+                var type_ = mimeType.a;
+                return type_;
+        }
+    };
     var $author$project$Head$Seo$tagsForAudio = function (audio) {
         return _List_fromArray([
             _Utils_Tuple2("og:audio", $elm$core$Maybe$Just($author$project$Head$raw(audio.fy))),
             _Utils_Tuple2("og:audio:secure_url", $elm$core$Maybe$Just($author$project$Head$raw(audio.fy))),
-            _Utils_Tuple2("og:audio:type", $elm$core$Maybe$map_fn($author$project$Head$raw, audio.ak))
+            _Utils_Tuple2("og:audio:type", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $danyx23$elm_mimetype$MimeType$toString, $author$project$Head$raw), audio.Y))
         ]);
     };
     var $author$project$Head$Seo$tagsForImage = function (image) {
@@ -4277,14 +5511,15 @@
             }, video.aB)))),
             _Utils_Tuple2("og:video:height", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($elm$core$String$fromInt, $elm$core$Maybe$map_fn(function ($) {
                 return $.aW;
-            }, video.aB))))
+            }, video.aB)))),
+            _Utils_Tuple2("og:video:type", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $danyx23$elm_mimetype$MimeType$toString, $author$project$Head$raw), video.Y))
         ]);
     };
     var $author$project$Head$Seo$tagsForCommon = function (common) {
         return _Utils_ap($author$project$Head$Seo$tagsForImage(common.at), _Utils_ap($elm$core$Maybe$withDefault_fn(_List_Nil, $elm$core$Maybe$map_fn($author$project$Head$Seo$tagsForAudio, common.bo)), _Utils_ap($elm$core$Maybe$withDefault_fn(_List_Nil, $elm$core$Maybe$map_fn($author$project$Head$Seo$tagsForVideo, common.bN)), _Utils_ap(_List_fromArray([
             _Utils_Tuple2("og:title", $elm$core$Maybe$Just($author$project$Head$raw(common.b9))),
             _Utils_Tuple2("og:url", $elm$core$Maybe$Just($elm$core$Maybe$withDefault_fn($author$project$Head$currentPageFullUrl, $elm$core$Maybe$map_fn($author$project$Head$raw, common.aO)))),
-            _Utils_Tuple2("og:description", $elm$core$Maybe$Just($author$project$Head$raw(common.af))),
+            _Utils_Tuple2("og:description", $elm$core$Maybe$Just($author$project$Head$raw(common.ag))),
             _Utils_Tuple2("og:site_name", $elm$core$Maybe$Just($author$project$Head$raw(common.a1))),
             _Utils_Tuple2("og:locale", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($author$project$Head$Seo$localeToString, common.aY)))
         ]), _Utils_ap($elm$core$List$map_fn(function (alternateLocale) {
@@ -4296,7 +5531,7 @@
         var details = _v0.b;
         return $elm$core$List$append_fn(_List_fromArray([
             $author$project$Head$canonicalLink(common.aO),
-            $author$project$Head$metaName_fn("description", $author$project$Head$raw(common.af))
+            $author$project$Head$metaName_fn("description", $author$project$Head$raw(common.ag))
         ]), $elm$core$List$filterMap_fn(function (_v2) {
             var name = _v2.a;
             var maybeContent = _v2.b;
@@ -4314,9 +5549,9 @@
                     return _Utils_ap(_List_fromArray([
                         _Utils_Tuple2("og:type", $elm$core$Maybe$Just($author$project$Head$raw("article"))),
                         _Utils_Tuple2("article:section", $elm$core$Maybe$map_fn($author$project$Head$raw, articleDetails.fs)),
-                        _Utils_Tuple2("article:published_time", $elm$core$Maybe$map_fn($author$project$Head$raw, articleDetails.fq)),
-                        _Utils_Tuple2("article:modified_time", $elm$core$Maybe$map_fn($author$project$Head$raw, articleDetails.fg)),
-                        _Utils_Tuple2("article:expiration_time", $elm$core$Maybe$map_fn($author$project$Head$raw, articleDetails.e3))
+                        _Utils_Tuple2("article:published_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $author$project$Head$Seo$dateOrDateTimeToString, $author$project$Head$raw), articleDetails.fq)),
+                        _Utils_Tuple2("article:modified_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $author$project$Head$Seo$dateOrDateTimeToString, $author$project$Head$raw), articleDetails.fg)),
+                        _Utils_Tuple2("article:expiration_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $author$project$Head$Seo$dateOrDateTimeToString, $author$project$Head$raw), articleDetails.e3))
                     ]), $elm$core$List$map_fn(function (tag) {
                         return _Utils_Tuple2("article:tag", $elm$core$Maybe$Just($author$project$Head$raw(tag)));
                     }, articleDetails.bI));
@@ -4325,7 +5560,7 @@
                     return _Utils_ap(_List_fromArray([
                         _Utils_Tuple2("og:type", $elm$core$Maybe$Just($author$project$Head$raw("book"))),
                         _Utils_Tuple2("og:isbn", $elm$core$Maybe$map_fn($author$project$Head$raw, bookDetails.fb)),
-                        _Utils_Tuple2("og:release_date", $elm$core$Maybe$map_fn($author$project$Head$raw, bookDetails.fr))
+                        _Utils_Tuple2("og:release_date", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $author$project$Head$Seo$dateOrDateTimeToString, $author$project$Head$raw), bookDetails.fr))
                     ]), $elm$core$List$map_fn(function (tag) {
                         return _Utils_Tuple2("book:tag", $elm$core$Maybe$Just($author$project$Head$raw(tag)));
                     }, bookDetails.bI));
@@ -4354,20 +5589,17 @@
     var $author$project$Route$Index$head = function (_static) {
         return $author$project$Head$Seo$website($author$project$Head$Seo$summary({
             aO: $elm$core$Maybe$Nothing,
-            af: "TODO",
+            ag: "TODO",
             at: {
                 aT: "elm-pages logo",
                 aB: $elm$core$Maybe$Nothing,
-                ak: $elm$core$Maybe$Nothing,
+                Y: $elm$core$Maybe$Nothing,
                 fy: $author$project$Pages$Url$external("TODO")
             },
             aY: $elm$core$Maybe$Nothing,
             a1: "elm-pages",
             b9: "TODO title"
         }));
-    };
-    var $elm$core$Basics$identity = function (x) {
-        return x;
     };
     var $author$project$RouteBuilder$WithData = $elm$core$Basics$identity;
     var $author$project$Server$Response$render = function (data) {
@@ -4454,23 +5686,14 @@
             return isGood(x) ? _List_Cons(x, xs) : xs;
         }), _List_Nil, list);
     }, $elm$core$List$filter = F2($elm$core$List$filter_fn);
-    var $elm$core$String$isEmpty = function (string) {
-        return string === "";
-    };
-    var $elm$core$Basics$not = _Basics_not;
     var $author$project$Route$baseUrlAsPath = $elm$core$List$filter_fn(function (item) {
         return !$elm$core$String$isEmpty(item);
     }, $elm$core$String$split_fn("/", $author$project$Route$baseUrl));
     var $author$project$Path$Path = $elm$core$Basics$identity;
-    var $elm$core$Basics$negate = function (n) {
-        return -n;
-    };
-    var $elm$core$String$slice = _String_slice;
     var $elm$core$String$dropRight_fn = function (n, string) {
         return (n < 1) ? string : _String_slice_fn(0, -n, string);
     }, $elm$core$String$dropRight = F2($elm$core$String$dropRight_fn);
     var $elm$core$String$endsWith = _String_endsWith;
-    var $elm$core$String$length = _String_length;
     var $author$project$Pages$Internal$String$chopEnd_fn = function (needle, string) {
         chopEnd: while (true) {
             if (_String_endsWith_fn(needle, string)) {
@@ -4547,11 +5770,11 @@
     var $author$project$Route$SubPage$head = function (_static) {
         return $author$project$Head$Seo$website($author$project$Head$Seo$summary({
             aO: $elm$core$Maybe$Nothing,
-            af: "TODO",
+            ag: "TODO",
             at: {
                 aT: "elm-pages logo",
                 aB: $elm$core$Maybe$Nothing,
-                ak: $elm$core$Maybe$Nothing,
+                Y: $elm$core$Maybe$Nothing,
                 fy: $author$project$Pages$Url$external("TODO")
             },
             aY: $elm$core$Maybe$Nothing,
@@ -5224,19 +6447,16 @@
         var rest = declarations.b;
         return _List_Cons(first, $rtfeldman$elm_css$Css$Structure$concatMapLastStyleBlock_fn(update, rest));
     }, $rtfeldman$elm_css$Css$Structure$concatMapLastStyleBlock = F2($rtfeldman$elm_css$Css$Structure$concatMapLastStyleBlock_fn);
-    var $elm$core$String$cons = _String_cons;
     var $rtfeldman$elm_css$ElmCssVendor$Murmur3$HashData_fn = function (shift, seed, hash, charsProcessed) {
         return { br: charsProcessed, bt: hash, am: seed, bE: shift };
     }, $rtfeldman$elm_css$ElmCssVendor$Murmur3$HashData = F4($rtfeldman$elm_css$ElmCssVendor$Murmur3$HashData_fn);
     var $rtfeldman$elm_css$ElmCssVendor$Murmur3$c1 = 3432918353;
     var $rtfeldman$elm_css$ElmCssVendor$Murmur3$c2 = 461845907;
-    var $elm$core$Bitwise$and = _Bitwise_and;
     var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
     var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
     var $rtfeldman$elm_css$ElmCssVendor$Murmur3$multiplyBy_fn = function (b, a) {
         return ((a & 65535) * b) + ((((a >>> 16) * b) & 65535) << 16);
     }, $rtfeldman$elm_css$ElmCssVendor$Murmur3$multiplyBy = F2($rtfeldman$elm_css$ElmCssVendor$Murmur3$multiplyBy_fn);
-    var $elm$core$Basics$neq = _Utils_notEqual;
     var $elm$core$Bitwise$or = _Bitwise_or;
     var $rtfeldman$elm_css$ElmCssVendor$Murmur3$rotlBy_fn = function (b, a) {
         return (a << b) | (a >>> (32 - b));
@@ -5273,7 +6493,6 @@
     }, $rtfeldman$elm_css$ElmCssVendor$Murmur3$hashString = F2($rtfeldman$elm_css$ElmCssVendor$Murmur3$hashString_fn);
     var $rtfeldman$elm_css$Hash$murmurSeed = 15739;
     var $elm$core$String$fromList = _String_fromList;
-    var $elm$core$Basics$modBy = _Basics_modBy;
     var $rtfeldman$elm_hex$Hex$unsafeToDigit = function (num) {
         unsafeToDigit: while (true) {
             switch (num) {
@@ -5890,7 +7109,7 @@
             G: 0,
             dn: 0,
             aG: 0,
-            aj: 0,
+            ak: 0,
             aH: 0,
             aI: 0,
             au: 0,
@@ -6010,9 +7229,6 @@
     }, $elm$url$Url$Url = F6($elm$url$Url$Url_fn);
     var $elm$core$String$contains = _String_contains;
     var $elm$core$String$indexes = _String_indexes;
-    var $elm$core$String$left_fn = function (n, string) {
-        return (n < 1) ? "" : _String_slice_fn(0, n, string);
-    }, $elm$core$String$left = F2($elm$core$String$left_fn);
     var $elm$core$String$toInt = _String_toInt;
     var $elm$url$Url$chompBeforePath_fn = function (protocol, path, params, frag, str) {
         if ($elm$core$String$isEmpty(str) || _String_contains_fn("@", str)) {
@@ -6145,9 +7361,6 @@
         return $elm$core$Task$command($elm$core$Task$map_fn(toMessage, task));
     }, $elm$core$Task$perform = F2($elm$core$Task$perform_fn);
     var $elm$browser$Browser$application = _Browser_application;
-    var $elm$core$Basics$composeR_fn = function (f, g, x) {
-        return g(f(x));
-    }, $elm$core$Basics$composeR = F3($elm$core$Basics$composeR_fn);
     var $author$project$Pages$Flags$BrowserFlags = function (a) {
         return { $: 0, a: a };
     };
@@ -6632,7 +7845,7 @@
                 return A8(config.a3, model.gy, $author$project$Pages$Internal$Platform$toFetcherState(model.M), $elm$core$Maybe$map_fn($elm$core$Tuple$second, model.jw), {
                     du: $author$project$Path$join($author$project$Pages$ContentCache$pathForUrl(urls)),
                     jf: config.jy(_Utils_update(currentUrl, { du: model.bW }))
-                }, $elm$core$Maybe$Nothing, pageData.dw, pageData.m, pageData.bP).a3(pageData.ac);
+                }, $elm$core$Maybe$Nothing, pageData.dw, pageData.m, pageData.bP).a3(pageData.ad);
             }
             else {
                 var error = _v1.a;
@@ -6719,8 +7932,6 @@
     var $elm$bytes$Bytes$Encode$sequence = function (builders) {
         return $elm$bytes$Bytes$Encode$Seq_fn($elm$bytes$Bytes$Encode$getWidths_fn(0, builders), builders);
     };
-    var $elm$core$Bitwise$shiftRightBy = _Bitwise_shiftRightBy;
-    var $elm$core$Basics$ge = _Utils_ge;
     var $danfishgold$base64_bytes$Encode$unsafeConvertChar = function (_char) {
         var key = $elm$core$Char$toCode(_char);
         if ((key >= 65) && (key <= 90)) {
@@ -6798,10 +8009,6 @@
             return $elm$core$Maybe$Nothing;
         }
     }, $danfishgold$base64_bytes$Encode$encodeCharacters = F4($danfishgold$base64_bytes$Encode$encodeCharacters_fn);
-    var $elm$core$String$foldr = _String_foldr;
-    var $elm$core$String$toList = function (string) {
-        return _String_foldr_fn($elm$core$List$cons, _List_Nil, string);
-    };
     var $danfishgold$base64_bytes$Encode$encodeChunks_fn = function (input, accum) {
         encodeChunks: while (true) {
             var _v0 = $elm$core$String$toList($elm$core$String$left_fn(4, input));
@@ -6895,15 +8102,6 @@
         return $author$project$Path$join($elm$core$List$drop_fn($elm$core$List$length(urls.hR), $elm$core$List$filter_fn($elm$core$Basics$neq(""), $elm$core$String$split_fn("/", $elm$core$Basics$composeR_fn($author$project$Pages$Internal$String$chopForwardSlashes_a0, $author$project$Pages$Internal$String$chopForwardSlashes_a1, urls.h0.du)))));
     };
     var $elm$json$Json$Decode$value = _Json_decodeValue;
-    var $elm$core$Result$withDefault_fn = function (def, result) {
-        if (!result.$) {
-            var a = result.a;
-            return a;
-        }
-        else {
-            return def;
-        }
-    }, $elm$core$Result$withDefault = F2($elm$core$Result$withDefault_fn);
     var $author$project$Pages$Internal$Platform$init_fn = function (config, flags, url, key) {
         var pageDataResult = $elm$core$Result$fromMaybe_fn($author$project$Pages$StaticHttpRequest$toBuildError_fn(url.du, $author$project$Pages$StaticHttpRequest$DecoderError("Bytes decode error")), $elm$core$Maybe$andThen_fn(function (justBytes) {
             var _v3 = $elm$bytes$Bytes$Decode$decode_fn(config.h2, justBytes);
@@ -6963,7 +8161,7 @@
                     iz: key,
                     ax: 0,
                     bx: $elm$core$Maybe$Nothing,
-                    m: $elm$core$Result$Ok({ bP: actionData, m: pageData, dw: sharedData, ac: userModel }),
+                    m: $elm$core$Result$Ok({ bP: actionData, m: pageData, dw: sharedData, ad: userModel }),
                     gy: $elm$core$Dict$empty,
                     bB: $elm$core$Maybe$Nothing,
                     aQ: false,
@@ -7678,9 +8876,6 @@
     var $elm$time$Time$Offset = function (a) {
         return { $: 1, a: a };
     };
-    var $elm$time$Time$Zone_fn = function (a, b) {
-        return { $: 0, a: a, b: b };
-    }, $elm$time$Time$Zone = F2($elm$time$Time$Zone_fn);
     var $elm$time$Time$customZone = $elm$time$Time$Zone;
     var $elm$time$Time$Posix = $elm$core$Basics$identity;
     var $elm$time$Time$millisToPosix = $elm$core$Basics$identity;
@@ -7981,10 +9176,10 @@
         var _v1 = model.m;
         if (!_v1.$) {
             var pageData = _v1.a;
-            var _v2 = A8(config.eF, model.gy, $author$project$Pages$Internal$Platform$toFetcherState(model.M), $elm$core$Maybe$map_fn($elm$core$Tuple$second, model.jw), pageData.dw, pageData.m, model.iz, userMsg, pageData.ac);
+            var _v2 = A8(config.eF, model.gy, $author$project$Pages$Internal$Platform$toFetcherState(model.M), $elm$core$Maybe$map_fn($elm$core$Tuple$second, model.jw), pageData.dw, pageData.m, model.iz, userMsg, pageData.ad);
             var userModel = _v2.a;
             var userCmd = _v2.b;
-            var updatedPageData = $elm$core$Result$Ok(_Utils_update(pageData, { ac: userModel }));
+            var updatedPageData = $elm$core$Result$Ok(_Utils_update(pageData, { ad: userModel }));
             return _Utils_Tuple2(_Utils_update(model, { m: updatedPageData }), $author$project$Pages$Internal$Platform$Batch(_List_fromArray([
                 effect,
                 $author$project$Pages$Internal$Platform$UserCmd(userCmd)
@@ -8010,9 +9205,9 @@
                 el: model.fy.el,
                 en: model.fy.en,
                 aM: urlWithoutRedirectResolution.aM
-            }), previousPageData.ac);
+            }), previousPageData.ad);
             var userModel = _v2.a;
-            var updatedPageData = { bP: newActionData, m: newPageData, dw: newSharedData, ac: userModel };
+            var updatedPageData = { bP: newActionData, m: newPageData, dw: newSharedData, ad: userModel };
             var updatedModel = (model.aQ || redirectPending) ? _Utils_update(model, {
                 m: $elm$core$Result$Ok(updatedPageData),
                 gy: $elm$core$Dict$empty,
@@ -8095,10 +9290,10 @@
         var _v1 = model.m;
         if (!_v1.$) {
             var pageData = _v1.a;
-            var _v2 = A8(config.eF, model.gy, $author$project$Pages$Internal$Platform$toFetcherState(model.M), $elm$core$Maybe$map_fn($elm$core$Tuple$second, model.jw), pageData.dw, pageData.m, model.iz, userMsg, pageData.ac);
+            var _v2 = A8(config.eF, model.gy, $author$project$Pages$Internal$Platform$toFetcherState(model.M), $elm$core$Maybe$map_fn($elm$core$Tuple$second, model.jw), pageData.dw, pageData.m, model.iz, userMsg, pageData.ad);
             var userModel = _v2.a;
             var userCmd = _v2.b;
-            var updatedPageData = $elm$core$Result$Ok(_Utils_update(pageData, { ac: userModel }));
+            var updatedPageData = $elm$core$Result$Ok(_Utils_update(pageData, { ad: userModel }));
             return _Utils_Tuple2(_Utils_update(model, { m: updatedPageData }), $author$project$Pages$Internal$Platform$Batch(_List_fromArray([
                 effect,
                 $author$project$Pages$Internal$Platform$UserCmd(userCmd)
@@ -8471,9 +9666,9 @@
                                 el: model.fy.el,
                                 en: model.fy.en,
                                 aM: urlWithoutRedirectResolution.aM
-                            }), previousPageData.ac);
+                            }), previousPageData.ad);
                             var userModel = _v19.a;
-                            var updatedPageData = { bP: newActionData, m: newPageData, dw: newSharedData, ac: userModel };
+                            var updatedPageData = { bP: newActionData, m: newPageData, dw: newSharedData, ad: userModel };
                             var updatedModel = (model.aQ || redirectPending) ? _Utils_update(model, {
                                 m: $elm$core$Result$Ok(updatedPageData),
                                 gy: $elm$core$Dict$empty,
@@ -8526,7 +9721,7 @@
                                         var newActionData = _v23.b;
                                         return _Utils_Tuple2(_Utils_update(model, {
                                             bx: $elm$core$Maybe$Nothing,
-                                            m: $elm$core$Result$Ok({ bP: newActionData, m: newPageData, dw: pageData.dw, ac: pageData.ac })
+                                            m: $elm$core$Result$Ok({ bP: newActionData, m: newPageData, dw: pageData.dw, ad: pageData.ad })
                                         }), $author$project$Pages$Internal$Platform$NoEffect);
                                     case 1:
                                         var _v24 = newThing.a;
@@ -8535,7 +9730,7 @@
                                         var newActionData = _v24.c;
                                         return _Utils_Tuple2(_Utils_update(model, {
                                             bx: $elm$core$Maybe$Nothing,
-                                            m: $elm$core$Result$Ok({ bP: newActionData, m: newPageData, dw: newSharedData, ac: pageData.ac })
+                                            m: $elm$core$Result$Ok({ bP: newActionData, m: newPageData, dw: newSharedData, ad: pageData.ad })
                                         }), $author$project$Pages$Internal$Platform$NoEffect);
                                     case 3:
                                         var info = newThing.a.a;
@@ -8627,7 +9822,7 @@
                     var pageData = _v1.a;
                     var urls = { h0: model.fy };
                     return $elm$core$Platform$Sub$batch(_List_fromArray([
-                        _Platform_map_fn(A2($elm$core$Basics$composeR, $author$project$Pages$Msg$UserMsg, $author$project$Pages$Internal$Platform$UserMsg), A3(config.f6, config.jy(model.fy), $author$project$Path$join(config.jg(config.jy(urls.h0))), pageData.ac)),
+                        _Platform_map_fn(A2($elm$core$Basics$composeR, $author$project$Pages$Msg$UserMsg, $author$project$Pages$Internal$Platform$UserMsg), A3(config.f6, config.jy(model.fy), $author$project$Path$join(config.jg(config.jy(urls.h0))), pageData.ad)),
                         _Platform_map_fn($author$project$Pages$Internal$Platform$HotReloadCompleteNew, config.ir)
                     ]));
                 }
