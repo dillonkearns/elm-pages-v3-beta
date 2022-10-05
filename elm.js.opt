@@ -7704,62 +7704,64 @@
     };
     var $author$project$Pages$Internal$NotFoundReason$document_fn = function (pathPatterns, payload) {
         return {
-            eR: $elm$html$Html$div_fn(_List_fromArray([
-                $elm$html$Html$Attributes$stringProperty_fn($elm$html$Html$Attributes$id_a0, "not-found-reason"),
-                _VirtualDom_style_fn("padding", "30px")
-            ]), function () {
-                var _v0 = payload.eq;
-                switch (_v0.$) {
-                    case 0:
-                        return _List_fromArray([
-                            $elm$html$Html$text("No route found for "),
-                            $elm$html$Html$code_fn(_List_Nil, _List_fromArray([
-                                $elm$html$Html$text($author$project$Path$toAbsolute(payload.du))
-                            ])),
-                            $elm$html$Html$text(" Did you mean to go to one of these routes:"),
-                            $elm$html$Html$ul_fn(_List_fromArray([
-                                _VirtualDom_style_fn("padding-top", "30px")
-                            ]), $elm$core$List$map_fn(function (route) {
-                                return $elm$html$Html$li_fn(_List_fromArray([
-                                    _VirtualDom_style_fn("list-style", "inside")
-                                ]), _List_fromArray([
-                                    $author$project$Pages$Internal$RoutePattern$view(route)
-                                ]));
-                            }, pathPatterns))
-                        ]);
-                    case 1:
-                        var moduleContext = _v0.a;
-                        var routes = _v0.b;
-                        return _List_fromArray([
-                            $elm$html$Html$h1_fn(_List_Nil, _List_fromArray([
-                                $elm$html$Html$text("Page Not Found")
-                            ])),
-                            $elm$html$Html$code_fn(_List_Nil, _List_fromArray([
-                                $elm$html$Html$text($author$project$Path$toAbsolute(payload.du))
-                            ])),
-                            $elm$html$Html$text(" successfully matched the route "),
-                            $elm$html$Html$br_fn(_List_Nil, _List_Nil),
-                            $elm$html$Html$br_fn(_List_Nil, _List_Nil),
-                            $elm$html$Html$code_fn(_List_Nil, _List_fromArray([
-                                $author$project$Pages$Internal$RoutePattern$view(moduleContext.hu)
-                            ])),
-                            $elm$html$Html$br_fn(_List_Nil, _List_Nil),
-                            $elm$html$Html$br_fn(_List_Nil, _List_Nil),
-                            $elm$html$Html$text(" from the Route Module "),
-                            $elm$html$Html$br_fn(_List_Nil, _List_Nil),
-                            $elm$html$Html$br_fn(_List_Nil, _List_Nil),
-                            $elm$html$Html$code_fn(_List_Nil, _List_fromArray([
-                                $elm$html$Html$text($author$project$Pages$Internal$NotFoundReason$moduleName(moduleContext))
-                            ])),
-                            $author$project$Pages$Internal$NotFoundReason$prerenderedOptionsView_fn(moduleContext, routes)
-                        ]);
-                    default:
-                        return _List_fromArray([
-                            $elm$html$Html$text("Page not found"),
-                            $elm$html$Html$text("TODO")
-                        ]);
-                }
-            }()),
+            eR: _List_fromArray([
+                $elm$html$Html$div_fn(_List_fromArray([
+                    $elm$html$Html$Attributes$stringProperty_fn($elm$html$Html$Attributes$id_a0, "not-found-reason"),
+                    _VirtualDom_style_fn("padding", "30px")
+                ]), function () {
+                    var _v0 = payload.eq;
+                    switch (_v0.$) {
+                        case 0:
+                            return _List_fromArray([
+                                $elm$html$Html$text("No route found for "),
+                                $elm$html$Html$code_fn(_List_Nil, _List_fromArray([
+                                    $elm$html$Html$text($author$project$Path$toAbsolute(payload.du))
+                                ])),
+                                $elm$html$Html$text(" Did you mean to go to one of these routes:"),
+                                $elm$html$Html$ul_fn(_List_fromArray([
+                                    _VirtualDom_style_fn("padding-top", "30px")
+                                ]), $elm$core$List$map_fn(function (route) {
+                                    return $elm$html$Html$li_fn(_List_fromArray([
+                                        _VirtualDom_style_fn("list-style", "inside")
+                                    ]), _List_fromArray([
+                                        $author$project$Pages$Internal$RoutePattern$view(route)
+                                    ]));
+                                }, pathPatterns))
+                            ]);
+                        case 1:
+                            var moduleContext = _v0.a;
+                            var routes = _v0.b;
+                            return _List_fromArray([
+                                $elm$html$Html$h1_fn(_List_Nil, _List_fromArray([
+                                    $elm$html$Html$text("Page Not Found")
+                                ])),
+                                $elm$html$Html$code_fn(_List_Nil, _List_fromArray([
+                                    $elm$html$Html$text($author$project$Path$toAbsolute(payload.du))
+                                ])),
+                                $elm$html$Html$text(" successfully matched the route "),
+                                $elm$html$Html$br_fn(_List_Nil, _List_Nil),
+                                $elm$html$Html$br_fn(_List_Nil, _List_Nil),
+                                $elm$html$Html$code_fn(_List_Nil, _List_fromArray([
+                                    $author$project$Pages$Internal$RoutePattern$view(moduleContext.hu)
+                                ])),
+                                $elm$html$Html$br_fn(_List_Nil, _List_Nil),
+                                $elm$html$Html$br_fn(_List_Nil, _List_Nil),
+                                $elm$html$Html$text(" from the Route Module "),
+                                $elm$html$Html$br_fn(_List_Nil, _List_Nil),
+                                $elm$html$Html$br_fn(_List_Nil, _List_Nil),
+                                $elm$html$Html$code_fn(_List_Nil, _List_fromArray([
+                                    $elm$html$Html$text($author$project$Pages$Internal$NotFoundReason$moduleName(moduleContext))
+                                ])),
+                                $author$project$Pages$Internal$NotFoundReason$prerenderedOptionsView_fn(moduleContext, routes)
+                            ]);
+                        default:
+                            return _List_fromArray([
+                                $elm$html$Html$text("Page not found"),
+                                $elm$html$Html$text("TODO")
+                            ]);
+                    }
+                }())
+            ]),
             b9: "Page not found"
         };
     }, $author$project$Pages$Internal$NotFoundReason$document = F2($author$project$Pages$Internal$NotFoundReason$document_fn);
@@ -7850,9 +7852,11 @@
             else {
                 var error = _v1.a;
                 return {
-                    eR: $elm$html$Html$div_fn(_List_Nil, _List_fromArray([
-                        $elm$html$Html$text(error)
-                    ])),
+                    eR: _List_fromArray([
+                        $elm$html$Html$div_fn(_List_Nil, _List_fromArray([
+                            $elm$html$Html$text(error)
+                        ]))
+                    ]),
                     b9: "Page Data Error"
                 };
             }
@@ -9798,11 +9802,10 @@
         var body = _v0.eR;
         var title = _v0.b9;
         return {
-            eR: _List_fromArray([
+            eR: _Utils_ap(_List_fromArray([
                 $author$project$Pages$Internal$Platform$onViewChangeElement(model.fy),
-                _VirtualDom_map_fn($author$project$Pages$Internal$Platform$UserMsg, body),
                 $author$project$AriaLiveAnnouncer$view(model.bn)
-            ]),
+            ]), $elm$core$List$map_fn($elm$html$Html$map($author$project$Pages$Internal$Platform$UserMsg), body)),
             b9: title
         };
     }, $author$project$Pages$Internal$Platform$view = F2($author$project$Pages$Internal$Platform$view_fn);
@@ -10974,7 +10977,9 @@
     var $rtfeldman$elm_css$Html$Styled$toUnstyled = $rtfeldman$elm_css$VirtualDom$Styled$toUnstyled;
     var $author$project$Shared$view_fn = function (stars, page, model, toMsg, pageView) {
         return {
-            eR: $rtfeldman$elm_css$Html$Styled$toUnstyled($rtfeldman$elm_css$VirtualDom$Styled$Node_fn($rtfeldman$elm_css$Html$Styled$div_a0, _List_Nil, pageView.eR)),
+            eR: _List_fromArray([
+                $rtfeldman$elm_css$Html$Styled$toUnstyled($rtfeldman$elm_css$VirtualDom$Styled$Node_fn($rtfeldman$elm_css$Html$Styled$div_a0, _List_Nil, pageView.eR))
+            ]),
             b9: pageView.b9
         };
     }, $author$project$Shared$view = F5($author$project$Shared$view_fn);
@@ -11595,7 +11600,9 @@
         };
     }, $author$project$View$map = F2($author$project$View$map_fn);
     var $author$project$Main$modelMismatchView = {
-        eR: $elm$html$Html$text("Model mismatch"),
+        eR: _List_fromArray([
+            $elm$html$Html$text("Model mismatch")
+        ]),
         b9: "Model mismatch"
     };
     var $author$project$ErrorPage$view_fn = function (error, model) {
@@ -11730,9 +11737,11 @@
             e9: _List_Nil,
             a3: function (_v8) {
                 return {
-                    eR: $elm$html$Html$div_fn(_List_Nil, _List_fromArray([
-                        $elm$html$Html$text("This page could not be found.")
-                    ])),
+                    eR: _List_fromArray([
+                        $elm$html$Html$div_fn(_List_Nil, _List_fromArray([
+                            $elm$html$Html$text("This page could not be found.")
+                        ]))
+                    ]),
                     b9: "Page not found"
                 };
             }
