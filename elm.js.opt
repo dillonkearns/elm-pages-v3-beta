@@ -4212,6 +4212,255 @@
     var $elm$core$Basics$composeR_fn = function (f, g, x) {
         return g(f(x));
     }, $elm$core$Basics$composeR = F3($elm$core$Basics$composeR_fn);
+    var $elm$core$List$maybeCons_fn = function (f, mx, xs) {
+        var _v0 = f(mx);
+        if (!_v0.$) {
+            var x = _v0.a;
+            return _List_Cons(x, xs);
+        }
+        else {
+            return xs;
+        }
+    }, $elm$core$List$maybeCons = F3($elm$core$List$maybeCons_fn);
+    var $elm$core$List$filterMap_fn = function (f, xs) {
+        return $elm$core$List$foldr_fn($elm$core$List$maybeCons(f), _List_Nil, xs);
+    }, $elm$core$List$filterMap = F2($elm$core$List$filterMap_fn);
+    var $elm$core$List$map_fn = function (f, xs) {
+        return $elm$core$List$foldr_fn(F2(function (x, acc) {
+            return _List_Cons(f(x), acc);
+        }), _List_Nil, xs);
+    }, $elm$core$List$map = F2($elm$core$List$map_fn);
+    var $author$project$Head$metaName_fn = function (name, content) {
+        return $author$project$Head$node_fn("meta", _List_fromArray([
+            _Utils_Tuple2("name", $author$project$Head$Raw(name)),
+            _Utils_Tuple2("content", content)
+        ]));
+    }, $author$project$Head$metaName = F2($author$project$Head$metaName_fn);
+    var $author$project$Head$metaProperty_fn = function (property, content) {
+        return $author$project$Head$node_fn("meta", _List_fromArray([
+            _Utils_Tuple2("property", $author$project$Head$raw(property)),
+            _Utils_Tuple2("content", content)
+        ]));
+    }, $author$project$Head$metaProperty = F2($author$project$Head$metaProperty_fn);
+    var $dillonkearns$elm_bcp47_language_tag$LanguageTag$Country$toCodeString = function (_v0) {
+        var rawCode = _v0;
+        return rawCode;
+    };
+    var $dillonkearns$elm_bcp47_language_tag$LanguageTag$Language$toCodeString = function (_v0) {
+        var rawCode = _v0;
+        return rawCode;
+    };
+    var $author$project$Head$Seo$localeToString = function (_v0) {
+        var language = _v0.a;
+        var territory = _v0.b;
+        return $dillonkearns$elm_bcp47_language_tag$LanguageTag$Language$toCodeString(language) + ("_" + $dillonkearns$elm_bcp47_language_tag$LanguageTag$Country$toCodeString(territory));
+    };
+    var $author$project$Head$Twitter$cardValue = function (card) {
+        switch (card.$) {
+            case 0:
+                var details = card.a;
+                var _v1 = details.jr;
+                if (!_v1) {
+                    return "summary";
+                }
+                else {
+                    return "summary_large_image";
+                }
+            case 1:
+                return "app";
+            default:
+                return "player";
+        }
+    };
+    var $author$project$Head$FullUrl = function (a) {
+        return { $: 1, a: a };
+    };
+    var $author$project$Head$urlAttribute = function (value) {
+        return $author$project$Head$FullUrl(value);
+    };
+    var $author$project$Head$Twitter$rawTags = function (card) {
+        return _List_Cons(_Utils_Tuple2("twitter:card", $elm$core$Maybe$Just($author$project$Head$raw($author$project$Head$Twitter$cardValue(card)))), function () {
+            switch (card.$) {
+                case 0:
+                    var details = card.a;
+                    return _List_fromArray([
+                        _Utils_Tuple2("twitter:title", $elm$core$Maybe$Just($author$project$Head$raw(details.b9))),
+                        _Utils_Tuple2("twitter:site", $elm$core$Maybe$map_fn($author$project$Head$raw, details.gH)),
+                        _Utils_Tuple2("twitter:description", $elm$core$Maybe$map_fn($author$project$Head$raw, details.ag)),
+                        _Utils_Tuple2("twitter:image", $elm$core$Maybe$map_fn($author$project$Head$urlAttribute, $elm$core$Maybe$map_fn(function ($) {
+                            return $.fz;
+                        }, details.at))),
+                        _Utils_Tuple2("twitter:image:alt", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn(function ($) {
+                            return $.aT;
+                        }, details.at)))
+                    ]);
+                case 1:
+                    var details = card.a;
+                    return _List_fromArray([
+                        _Utils_Tuple2("twitter:title", $elm$core$Maybe$Just($author$project$Head$raw(details.b9))),
+                        _Utils_Tuple2("twitter:site", $elm$core$Maybe$Just($author$project$Head$raw(details.gH))),
+                        _Utils_Tuple2("twitter:description", $elm$core$Maybe$map_fn($author$project$Head$raw, details.ag)),
+                        _Utils_Tuple2("twitter:image", $elm$core$Maybe$map_fn($author$project$Head$urlAttribute, $elm$core$Maybe$map_fn(function ($) {
+                            return $.fz;
+                        }, details.at))),
+                        _Utils_Tuple2("twitter:image:alt", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn(function ($) {
+                            return $.aT;
+                        }, details.at))),
+                        _Utils_Tuple2("twitter:app:name:iphone", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eO)),
+                        _Utils_Tuple2("twitter:app:name:ipad", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eN)),
+                        _Utils_Tuple2("twitter:app:name:googleplay", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eM)),
+                        _Utils_Tuple2("twitter:app:id:iphone", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($elm$core$String$fromInt, details.eL))),
+                        _Utils_Tuple2("twitter:app:id:ipad", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($elm$core$String$fromInt, details.eK))),
+                        _Utils_Tuple2("twitter:app:id:googleplay", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eJ)),
+                        _Utils_Tuple2("twitter:app:url:iphone", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eR)),
+                        _Utils_Tuple2("twitter:app:url:ipad", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eQ)),
+                        _Utils_Tuple2("twitter:app:url:googleplay", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eP)),
+                        _Utils_Tuple2("twitter:app:country", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eI))
+                    ]);
+                default:
+                    var details = card.a;
+                    return _List_fromArray([
+                        _Utils_Tuple2("twitter:title", $elm$core$Maybe$Just($author$project$Head$raw(details.b9))),
+                        _Utils_Tuple2("twitter:site", $elm$core$Maybe$Just($author$project$Head$raw(details.gH))),
+                        _Utils_Tuple2("twitter:description", $elm$core$Maybe$map_fn($author$project$Head$raw, details.ag)),
+                        _Utils_Tuple2("twitter:image", $elm$core$Maybe$Just($author$project$Head$urlAttribute(details.at.fz))),
+                        _Utils_Tuple2("twitter:image:alt", $elm$core$Maybe$Just($author$project$Head$raw(details.at.aT)))
+                    ]);
+            }
+        }());
+    };
+    var $danyx23$elm_mimetype$MimeType$toString = function (mimeType) {
+        switch (mimeType.$) {
+            case 0:
+                var img = mimeType.a;
+                switch (img.$) {
+                    case 0:
+                        return "image/jpeg";
+                    case 1:
+                        return "image/png";
+                    case 2:
+                        return "image/gif";
+                    default:
+                        var type_ = img.a;
+                        return "image/" + type_;
+                }
+            case 1:
+                var audio = mimeType.a;
+                switch (audio.$) {
+                    case 0:
+                        return "audio/mp3";
+                    case 2:
+                        return "audio/wav";
+                    case 1:
+                        return "audio/ogg";
+                    default:
+                        var type_ = audio.a;
+                        return "audio/" + type_;
+                }
+            case 2:
+                var video = mimeType.a;
+                switch (video.$) {
+                    case 0:
+                        return "video/mp4";
+                    case 1:
+                        return "video/mpeg";
+                    case 2:
+                        return "video/quicktime";
+                    case 3:
+                        return "video/avi";
+                    case 4:
+                        return "video/webm";
+                    default:
+                        var type_ = video.a;
+                        return "video/" + type_;
+                }
+            case 3:
+                var text = mimeType.a;
+                switch (text.$) {
+                    case 0:
+                        return "text/plain";
+                    case 1:
+                        return "text/html";
+                    case 2:
+                        return "text/css";
+                    case 3:
+                        return "text/xml";
+                    case 4:
+                        return "application/json";
+                    default:
+                        var type_ = text.a;
+                        return "text/" + type_;
+                }
+            case 4:
+                var app = mimeType.a;
+                switch (app.$) {
+                    case 0:
+                        return "application/msword";
+                    case 1:
+                        return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    case 2:
+                        return "application/vnd.ms-excel";
+                    case 3:
+                        return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    case 4:
+                        return "application/vnd.ms-powerpoint";
+                    case 5:
+                        return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+                    case 6:
+                        return "application/pdf";
+                    default:
+                        var type_ = app.a;
+                        return "application/" + type_;
+                }
+            default:
+                var type_ = mimeType.a;
+                return type_;
+        }
+    };
+    var $author$project$Head$Seo$tagsForAudio = function (audio) {
+        return _List_fromArray([
+            _Utils_Tuple2("og:audio", $elm$core$Maybe$Just($author$project$Head$raw(audio.fz))),
+            _Utils_Tuple2("og:audio:secure_url", $elm$core$Maybe$Just($author$project$Head$raw(audio.fz))),
+            _Utils_Tuple2("og:audio:type", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $danyx23$elm_mimetype$MimeType$toString, $author$project$Head$raw), audio.Y))
+        ]);
+    };
+    var $author$project$Head$Seo$tagsForImage = function (image) {
+        return _List_fromArray([
+            _Utils_Tuple2("og:image", $elm$core$Maybe$Just($author$project$Head$urlAttribute(image.fz))),
+            _Utils_Tuple2("og:image:secure_url", $elm$core$Maybe$Just($author$project$Head$urlAttribute(image.fz))),
+            _Utils_Tuple2("og:image:alt", $elm$core$Maybe$Just($author$project$Head$raw(image.aT))),
+            _Utils_Tuple2("og:image:width", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($elm$core$String$fromInt, $elm$core$Maybe$map_fn(function ($) {
+                return $.a5;
+            }, image.aB)))),
+            _Utils_Tuple2("og:image:height", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($elm$core$String$fromInt, $elm$core$Maybe$map_fn(function ($) {
+                return $.aW;
+            }, image.aB))))
+        ]);
+    };
+    var $author$project$Head$Seo$tagsForVideo = function (video) {
+        return _List_fromArray([
+            _Utils_Tuple2("og:video", $elm$core$Maybe$Just($author$project$Head$raw(video.fz))),
+            _Utils_Tuple2("og:video:secure_url", $elm$core$Maybe$Just($author$project$Head$raw(video.fz))),
+            _Utils_Tuple2("og:video:width", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($elm$core$String$fromInt, $elm$core$Maybe$map_fn(function ($) {
+                return $.a5;
+            }, video.aB)))),
+            _Utils_Tuple2("og:video:height", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($elm$core$String$fromInt, $elm$core$Maybe$map_fn(function ($) {
+                return $.aW;
+            }, video.aB)))),
+            _Utils_Tuple2("og:video:type", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $danyx23$elm_mimetype$MimeType$toString, $author$project$Head$raw), video.Y))
+        ]);
+    };
+    var $author$project$Head$Seo$tagsForCommon = function (common) {
+        return _Utils_ap($author$project$Head$Seo$tagsForImage(common.at), _Utils_ap($elm$core$Maybe$withDefault_fn(_List_Nil, $elm$core$Maybe$map_fn($author$project$Head$Seo$tagsForAudio, common.bo)), _Utils_ap($elm$core$Maybe$withDefault_fn(_List_Nil, $elm$core$Maybe$map_fn($author$project$Head$Seo$tagsForVideo, common.bN)), _Utils_ap(_List_fromArray([
+            _Utils_Tuple2("og:title", $elm$core$Maybe$Just($author$project$Head$raw(common.b9))),
+            _Utils_Tuple2("og:url", $elm$core$Maybe$Just($elm$core$Maybe$withDefault_fn($author$project$Head$currentPageFullUrl, $elm$core$Maybe$map_fn($author$project$Head$raw, common.aO)))),
+            _Utils_Tuple2("og:description", $elm$core$Maybe$Just($author$project$Head$raw(common.ag))),
+            _Utils_Tuple2("og:site_name", $elm$core$Maybe$Just($author$project$Head$raw(common.a1))),
+            _Utils_Tuple2("og:locale", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($author$project$Head$Seo$localeToString, common.aY)))
+        ]), _Utils_ap($elm$core$List$map_fn(function (alternateLocale) {
+            return _Utils_Tuple2("og:locale:alternate", $elm$core$Maybe$Just($author$project$Head$raw($author$project$Head$Seo$localeToString(alternateLocale))));
+        }, common.bR), $author$project$Head$Twitter$rawTags(common.ca))))));
+    };
     var $rtfeldman$elm_iso8601_date_strings$Iso8601$fromMonth = function (month) {
         switch (month) {
             case 0:
@@ -5141,11 +5390,6 @@
             })
         ]));
     };
-    var $elm$core$List$map_fn = function (f, xs) {
-        return $elm$core$List$foldr_fn(F2(function (x, acc) {
-            return _List_Cons(f(x), acc);
-        }), _List_Nil, xs);
-    }, $elm$core$List$map = F2($elm$core$List$map_fn);
     var $elm$parser$Parser$DeadEnd_fn = function (row, col, problem) {
         return { dV: col, i4: problem, jh: row };
     }, $elm$parser$Parser$DeadEnd = F3($elm$parser$Parser$DeadEnd_fn);
@@ -5272,7 +5516,7 @@
         return $justinmimbs$date$Date$formatWithLanguage_fn($justinmimbs$date$Date$language_en, pattern);
     };
     var $justinmimbs$date$Date$toIsoString = $justinmimbs$date$Date$format("yyyy-MM-dd");
-    var $dillonkearns$elm_date_or_date_time$DateOrDateTime$dateOrDateTimeToIso8601String = function (dateOrDateTime) {
+    var $dillonkearns$elm_date_or_date_time$DateOrDateTime$toIso8601 = function (dateOrDateTime) {
         if (!dateOrDateTime.$) {
             var date = dateOrDateTime.a;
             return $justinmimbs$date$Date$toIsoString(date);
@@ -5281,250 +5525,6 @@
             var dateTime = dateOrDateTime.a;
             return $rtfeldman$elm_iso8601_date_strings$Iso8601$fromTime(dateTime);
         }
-    };
-    var $elm$core$List$maybeCons_fn = function (f, mx, xs) {
-        var _v0 = f(mx);
-        if (!_v0.$) {
-            var x = _v0.a;
-            return _List_Cons(x, xs);
-        }
-        else {
-            return xs;
-        }
-    }, $elm$core$List$maybeCons = F3($elm$core$List$maybeCons_fn);
-    var $elm$core$List$filterMap_fn = function (f, xs) {
-        return $elm$core$List$foldr_fn($elm$core$List$maybeCons(f), _List_Nil, xs);
-    }, $elm$core$List$filterMap = F2($elm$core$List$filterMap_fn);
-    var $author$project$Head$metaName_fn = function (name, content) {
-        return $author$project$Head$node_fn("meta", _List_fromArray([
-            _Utils_Tuple2("name", $author$project$Head$Raw(name)),
-            _Utils_Tuple2("content", content)
-        ]));
-    }, $author$project$Head$metaName = F2($author$project$Head$metaName_fn);
-    var $author$project$Head$metaProperty_fn = function (property, content) {
-        return $author$project$Head$node_fn("meta", _List_fromArray([
-            _Utils_Tuple2("property", $author$project$Head$raw(property)),
-            _Utils_Tuple2("content", content)
-        ]));
-    }, $author$project$Head$metaProperty = F2($author$project$Head$metaProperty_fn);
-    var $dillonkearns$elm_bcp47_language_tag$LanguageTag$Country$toCodeString = function (_v0) {
-        var rawCode = _v0;
-        return rawCode;
-    };
-    var $dillonkearns$elm_bcp47_language_tag$LanguageTag$Language$toCodeString = function (_v0) {
-        var rawCode = _v0;
-        return rawCode;
-    };
-    var $author$project$Head$Seo$localeToString = function (_v0) {
-        var language = _v0.a;
-        var territory = _v0.b;
-        return $dillonkearns$elm_bcp47_language_tag$LanguageTag$Language$toCodeString(language) + ("_" + $dillonkearns$elm_bcp47_language_tag$LanguageTag$Country$toCodeString(territory));
-    };
-    var $author$project$Head$Twitter$cardValue = function (card) {
-        switch (card.$) {
-            case 0:
-                var details = card.a;
-                var _v1 = details.jr;
-                if (!_v1) {
-                    return "summary";
-                }
-                else {
-                    return "summary_large_image";
-                }
-            case 1:
-                return "app";
-            default:
-                return "player";
-        }
-    };
-    var $author$project$Head$FullUrl = function (a) {
-        return { $: 1, a: a };
-    };
-    var $author$project$Head$urlAttribute = function (value) {
-        return $author$project$Head$FullUrl(value);
-    };
-    var $author$project$Head$Twitter$rawTags = function (card) {
-        return _List_Cons(_Utils_Tuple2("twitter:card", $elm$core$Maybe$Just($author$project$Head$raw($author$project$Head$Twitter$cardValue(card)))), function () {
-            switch (card.$) {
-                case 0:
-                    var details = card.a;
-                    return _List_fromArray([
-                        _Utils_Tuple2("twitter:title", $elm$core$Maybe$Just($author$project$Head$raw(details.b9))),
-                        _Utils_Tuple2("twitter:site", $elm$core$Maybe$map_fn($author$project$Head$raw, details.gH)),
-                        _Utils_Tuple2("twitter:description", $elm$core$Maybe$map_fn($author$project$Head$raw, details.ag)),
-                        _Utils_Tuple2("twitter:image", $elm$core$Maybe$map_fn($author$project$Head$urlAttribute, $elm$core$Maybe$map_fn(function ($) {
-                            return $.fz;
-                        }, details.at))),
-                        _Utils_Tuple2("twitter:image:alt", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn(function ($) {
-                            return $.aT;
-                        }, details.at)))
-                    ]);
-                case 1:
-                    var details = card.a;
-                    return _List_fromArray([
-                        _Utils_Tuple2("twitter:title", $elm$core$Maybe$Just($author$project$Head$raw(details.b9))),
-                        _Utils_Tuple2("twitter:site", $elm$core$Maybe$Just($author$project$Head$raw(details.gH))),
-                        _Utils_Tuple2("twitter:description", $elm$core$Maybe$map_fn($author$project$Head$raw, details.ag)),
-                        _Utils_Tuple2("twitter:image", $elm$core$Maybe$map_fn($author$project$Head$urlAttribute, $elm$core$Maybe$map_fn(function ($) {
-                            return $.fz;
-                        }, details.at))),
-                        _Utils_Tuple2("twitter:image:alt", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn(function ($) {
-                            return $.aT;
-                        }, details.at))),
-                        _Utils_Tuple2("twitter:app:name:iphone", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eO)),
-                        _Utils_Tuple2("twitter:app:name:ipad", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eN)),
-                        _Utils_Tuple2("twitter:app:name:googleplay", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eM)),
-                        _Utils_Tuple2("twitter:app:id:iphone", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($elm$core$String$fromInt, details.eL))),
-                        _Utils_Tuple2("twitter:app:id:ipad", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($elm$core$String$fromInt, details.eK))),
-                        _Utils_Tuple2("twitter:app:id:googleplay", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eJ)),
-                        _Utils_Tuple2("twitter:app:url:iphone", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eR)),
-                        _Utils_Tuple2("twitter:app:url:ipad", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eQ)),
-                        _Utils_Tuple2("twitter:app:url:googleplay", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eP)),
-                        _Utils_Tuple2("twitter:app:country", $elm$core$Maybe$map_fn($author$project$Head$raw, details.eI))
-                    ]);
-                default:
-                    var details = card.a;
-                    return _List_fromArray([
-                        _Utils_Tuple2("twitter:title", $elm$core$Maybe$Just($author$project$Head$raw(details.b9))),
-                        _Utils_Tuple2("twitter:site", $elm$core$Maybe$Just($author$project$Head$raw(details.gH))),
-                        _Utils_Tuple2("twitter:description", $elm$core$Maybe$map_fn($author$project$Head$raw, details.ag)),
-                        _Utils_Tuple2("twitter:image", $elm$core$Maybe$Just($author$project$Head$urlAttribute(details.at.fz))),
-                        _Utils_Tuple2("twitter:image:alt", $elm$core$Maybe$Just($author$project$Head$raw(details.at.aT)))
-                    ]);
-            }
-        }());
-    };
-    var $danyx23$elm_mimetype$MimeType$toString = function (mimeType) {
-        switch (mimeType.$) {
-            case 0:
-                var img = mimeType.a;
-                switch (img.$) {
-                    case 0:
-                        return "image/jpeg";
-                    case 1:
-                        return "image/png";
-                    case 2:
-                        return "image/gif";
-                    default:
-                        var type_ = img.a;
-                        return "image/" + type_;
-                }
-            case 1:
-                var audio = mimeType.a;
-                switch (audio.$) {
-                    case 0:
-                        return "audio/mp3";
-                    case 2:
-                        return "audio/wav";
-                    case 1:
-                        return "audio/ogg";
-                    default:
-                        var type_ = audio.a;
-                        return "audio/" + type_;
-                }
-            case 2:
-                var video = mimeType.a;
-                switch (video.$) {
-                    case 0:
-                        return "video/mp4";
-                    case 1:
-                        return "video/mpeg";
-                    case 2:
-                        return "video/quicktime";
-                    case 3:
-                        return "video/avi";
-                    case 4:
-                        return "video/webm";
-                    default:
-                        var type_ = video.a;
-                        return "video/" + type_;
-                }
-            case 3:
-                var text = mimeType.a;
-                switch (text.$) {
-                    case 0:
-                        return "text/plain";
-                    case 1:
-                        return "text/html";
-                    case 2:
-                        return "text/css";
-                    case 3:
-                        return "text/xml";
-                    case 4:
-                        return "application/json";
-                    default:
-                        var type_ = text.a;
-                        return "text/" + type_;
-                }
-            case 4:
-                var app = mimeType.a;
-                switch (app.$) {
-                    case 0:
-                        return "application/msword";
-                    case 1:
-                        return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                    case 2:
-                        return "application/vnd.ms-excel";
-                    case 3:
-                        return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    case 4:
-                        return "application/vnd.ms-powerpoint";
-                    case 5:
-                        return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-                    case 6:
-                        return "application/pdf";
-                    default:
-                        var type_ = app.a;
-                        return "application/" + type_;
-                }
-            default:
-                var type_ = mimeType.a;
-                return type_;
-        }
-    };
-    var $author$project$Head$Seo$tagsForAudio = function (audio) {
-        return _List_fromArray([
-            _Utils_Tuple2("og:audio", $elm$core$Maybe$Just($author$project$Head$raw(audio.fz))),
-            _Utils_Tuple2("og:audio:secure_url", $elm$core$Maybe$Just($author$project$Head$raw(audio.fz))),
-            _Utils_Tuple2("og:audio:type", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $danyx23$elm_mimetype$MimeType$toString, $author$project$Head$raw), audio.Y))
-        ]);
-    };
-    var $author$project$Head$Seo$tagsForImage = function (image) {
-        return _List_fromArray([
-            _Utils_Tuple2("og:image", $elm$core$Maybe$Just($author$project$Head$urlAttribute(image.fz))),
-            _Utils_Tuple2("og:image:secure_url", $elm$core$Maybe$Just($author$project$Head$urlAttribute(image.fz))),
-            _Utils_Tuple2("og:image:alt", $elm$core$Maybe$Just($author$project$Head$raw(image.aT))),
-            _Utils_Tuple2("og:image:width", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($elm$core$String$fromInt, $elm$core$Maybe$map_fn(function ($) {
-                return $.a5;
-            }, image.aB)))),
-            _Utils_Tuple2("og:image:height", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($elm$core$String$fromInt, $elm$core$Maybe$map_fn(function ($) {
-                return $.aW;
-            }, image.aB))))
-        ]);
-    };
-    var $author$project$Head$Seo$tagsForVideo = function (video) {
-        return _List_fromArray([
-            _Utils_Tuple2("og:video", $elm$core$Maybe$Just($author$project$Head$raw(video.fz))),
-            _Utils_Tuple2("og:video:secure_url", $elm$core$Maybe$Just($author$project$Head$raw(video.fz))),
-            _Utils_Tuple2("og:video:width", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($elm$core$String$fromInt, $elm$core$Maybe$map_fn(function ($) {
-                return $.a5;
-            }, video.aB)))),
-            _Utils_Tuple2("og:video:height", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($elm$core$String$fromInt, $elm$core$Maybe$map_fn(function ($) {
-                return $.aW;
-            }, video.aB)))),
-            _Utils_Tuple2("og:video:type", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $danyx23$elm_mimetype$MimeType$toString, $author$project$Head$raw), video.Y))
-        ]);
-    };
-    var $author$project$Head$Seo$tagsForCommon = function (common) {
-        return _Utils_ap($author$project$Head$Seo$tagsForImage(common.at), _Utils_ap($elm$core$Maybe$withDefault_fn(_List_Nil, $elm$core$Maybe$map_fn($author$project$Head$Seo$tagsForAudio, common.bo)), _Utils_ap($elm$core$Maybe$withDefault_fn(_List_Nil, $elm$core$Maybe$map_fn($author$project$Head$Seo$tagsForVideo, common.bN)), _Utils_ap(_List_fromArray([
-            _Utils_Tuple2("og:title", $elm$core$Maybe$Just($author$project$Head$raw(common.b9))),
-            _Utils_Tuple2("og:url", $elm$core$Maybe$Just($elm$core$Maybe$withDefault_fn($author$project$Head$currentPageFullUrl, $elm$core$Maybe$map_fn($author$project$Head$raw, common.aO)))),
-            _Utils_Tuple2("og:description", $elm$core$Maybe$Just($author$project$Head$raw(common.ag))),
-            _Utils_Tuple2("og:site_name", $elm$core$Maybe$Just($author$project$Head$raw(common.a1))),
-            _Utils_Tuple2("og:locale", $elm$core$Maybe$map_fn($author$project$Head$raw, $elm$core$Maybe$map_fn($author$project$Head$Seo$localeToString, common.aY)))
-        ]), _Utils_ap($elm$core$List$map_fn(function (alternateLocale) {
-            return _Utils_Tuple2("og:locale:alternate", $elm$core$Maybe$Just($author$project$Head$raw($author$project$Head$Seo$localeToString(alternateLocale))));
-        }, common.bR), $author$project$Head$Twitter$rawTags(common.ca))))));
     };
     var $author$project$Head$Seo$tags = function (_v0) {
         var common = _v0.a;
@@ -5549,9 +5549,9 @@
                     return _Utils_ap(_List_fromArray([
                         _Utils_Tuple2("og:type", $elm$core$Maybe$Just($author$project$Head$raw("article"))),
                         _Utils_Tuple2("article:section", $elm$core$Maybe$map_fn($author$project$Head$raw, articleDetails.ft)),
-                        _Utils_Tuple2("article:published_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $dillonkearns$elm_date_or_date_time$DateOrDateTime$dateOrDateTimeToIso8601String, $author$project$Head$raw), articleDetails.fr)),
-                        _Utils_Tuple2("article:modified_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $dillonkearns$elm_date_or_date_time$DateOrDateTime$dateOrDateTimeToIso8601String, $author$project$Head$raw), articleDetails.fh)),
-                        _Utils_Tuple2("article:expiration_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $dillonkearns$elm_date_or_date_time$DateOrDateTime$dateOrDateTimeToIso8601String, $author$project$Head$raw), articleDetails.e4))
+                        _Utils_Tuple2("article:published_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $dillonkearns$elm_date_or_date_time$DateOrDateTime$toIso8601, $author$project$Head$raw), articleDetails.fr)),
+                        _Utils_Tuple2("article:modified_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $dillonkearns$elm_date_or_date_time$DateOrDateTime$toIso8601, $author$project$Head$raw), articleDetails.fh)),
+                        _Utils_Tuple2("article:expiration_time", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $dillonkearns$elm_date_or_date_time$DateOrDateTime$toIso8601, $author$project$Head$raw), articleDetails.e4))
                     ]), $elm$core$List$map_fn(function (tag) {
                         return _Utils_Tuple2("article:tag", $elm$core$Maybe$Just($author$project$Head$raw(tag)));
                     }, articleDetails.bI));
@@ -5560,7 +5560,7 @@
                     return _Utils_ap(_List_fromArray([
                         _Utils_Tuple2("og:type", $elm$core$Maybe$Just($author$project$Head$raw("book"))),
                         _Utils_Tuple2("og:isbn", $elm$core$Maybe$map_fn($author$project$Head$raw, bookDetails.fc)),
-                        _Utils_Tuple2("og:release_date", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $dillonkearns$elm_date_or_date_time$DateOrDateTime$dateOrDateTimeToIso8601String, $author$project$Head$raw), bookDetails.fs))
+                        _Utils_Tuple2("og:release_date", $elm$core$Maybe$map_fn(A2($elm$core$Basics$composeR, $dillonkearns$elm_date_or_date_time$DateOrDateTime$toIso8601, $author$project$Head$raw), bookDetails.fs))
                     ]), $elm$core$List$map_fn(function (tag) {
                         return _Utils_Tuple2("book:tag", $elm$core$Maybe$Just($author$project$Head$raw(tag)));
                     }, bookDetails.bI));
