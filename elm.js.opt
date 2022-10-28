@@ -3658,16 +3658,16 @@
     };
     var $author$project$DataSource$map_fn = function (fn, requestInfo) {
         switch (requestInfo.$) {
-            case 1:
-                var error = requestInfo.a;
-                return $author$project$Pages$StaticHttpRequest$RequestError(error);
+            case 2:
+                var value = requestInfo.a;
+                return $author$project$Pages$StaticHttpRequest$ApiRoute(fn(value));
             case 0:
                 var urls = requestInfo.a;
                 var lookupFn = requestInfo.b;
                 return $author$project$Pages$StaticHttpRequest$Request_fn(urls, A2($author$project$DataSource$mapLookupFn, fn, lookupFn));
             default:
-                var value = requestInfo.a;
-                return $author$project$Pages$StaticHttpRequest$ApiRoute(fn(value));
+                var error = requestInfo.a;
+                return $author$project$Pages$StaticHttpRequest$RequestError(error);
         }
     }, $author$project$DataSource$map = F2($author$project$DataSource$map_fn);
     var $author$project$DataSource$mapLookupFn_fn = function (fn, lookupFn, maybeMock, requests) {
