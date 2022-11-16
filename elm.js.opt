@@ -6,33 +6,56 @@
         return wrapper;
     }
     function F2(fun) {
-        return F(2, fun, function (a) { return function (b) { return fun(a, b); }; });
+        var curried = function (a) {
+            return function (b) {
+                return fun(a, b);
+            };
+        };
+        curried.a2 = fun;
+        return curried;
     }
     function F3(fun) {
-        return F(3, fun, function (a) {
-            return function (b) { return function (c) { return fun(a, b, c); }; };
-        });
+        var curried = function (a) {
+            return function (b) {
+                return function (c) {
+                    return fun(a, b, c);
+                };
+            };
+        };
+        curried.a3 =
+            fun;
+        return curried;
     }
     function F4(fun) {
-        return F(4, fun, function (a) {
+        var curried = function (a) {
             return function (b) {
                 return function (c) {
-                    return function (d) { return fun(a, b, c, d); };
+                    return function (d) {
+                        return fun(a, b, c, d);
+                    };
                 };
             };
-        });
+        };
+        curried.a4 = fun;
+        return curried;
     }
     function F5(fun) {
-        return F(5, fun, function (a) {
+        var curried = function (a) {
             return function (b) {
                 return function (c) {
-                    return function (d) { return function (e) { return fun(a, b, c, d, e); }; };
+                    return function (d) {
+                        return function (e) {
+                            return fun(a, b, c, d, e);
+                        };
+                    };
                 };
             };
-        });
+        };
+        curried.a5 = fun;
+        return curried;
     }
     function F6(fun) {
-        return F(6, fun, function (a) {
+        var curried = function (a) {
             return function (b) {
                 return function (c) {
                     return function (d) {
@@ -44,10 +67,12 @@
                     };
                 };
             };
-        });
+        };
+        curried.a6 = fun;
+        return curried;
     }
     function F7(fun) {
-        return F(7, fun, function (a) {
+        var curried = function (a) {
             return function (b) {
                 return function (c) {
                     return function (d) {
@@ -59,10 +84,13 @@
                     };
                 };
             };
-        });
+        };
+        curried.
+            a7 = fun;
+        return curried;
     }
     function F8(fun) {
-        return F(8, fun, function (a) {
+        var curried = function (a) {
             return function (b) {
                 return function (c) {
                     return function (d) {
@@ -78,10 +106,12 @@
                     };
                 };
             };
-        });
+        };
+        curried.a8 = fun;
+        return curried;
     }
     function F9(fun) {
-        return F(9, fun, function (a) {
+        var curried = function (a) {
             return function (b) {
                 return function (c) {
                     return function (d) {
@@ -99,31 +129,35 @@
                     };
                 };
             };
-        });
+        };
+        curried
+            .a9 = fun;
+        return curried;
     }
     function A2(fun, a, b) {
-        return fun.a === 2 ? fun.f(a, b) : fun(a)(b);
+        return fun.a2 ? fun.a2(a, b) : fun(a)(b);
     }
     function A3(fun, a, b, c) {
-        return fun.a === 3 ? fun.f(a, b, c) : fun(a)(b)(c);
+        return fun.a3 ? fun.a3(a, b, c) : fun(a)(b)(c);
     }
     function A4(fun, a, b, c, d) {
-        return fun.a === 4 ? fun.f(a, b, c, d) : fun(a)(b)(c)(d);
+        return fun.a4 ? fun.a4(a, b, c, d) : fun(a)(b)(c)(d);
     }
     function A5(fun, a, b, c, d, e) {
-        return fun.a === 5 ? fun.f(a, b, c, d, e) : fun(a)(b)(c)(d)(e);
+        return fun.a5 ? fun.a5(a, b, c, d, e)
+            : fun(a)(b)(c)(d)(e);
     }
     function A6(fun, a, b, c, d, e, f) {
-        return fun.a === 6 ? fun.f(a, b, c, d, e, f) : fun(a)(b)(c)(d)(e)(f);
+        return fun.a6 ? fun.a6(a, b, c, d, e, f) : fun(a)(b)(c)(d)(e)(f);
     }
     function A7(fun, a, b, c, d, e, f, g) {
-        return fun.a === 7 ? fun.f(a, b, c, d, e, f, g) : fun(a)(b)(c)(d)(e)(f)(g);
+        return fun.a7 ? fun.a7(a, b, c, d, e, f, g) : fun(a)(b)(c)(d)(e)(f)(g);
     }
     function A8(fun, a, b, c, d, e, f, g, h) {
-        return fun.a === 8 ? fun.f(a, b, c, d, e, f, g, h) : fun(a)(b)(c)(d)(e)(f)(g)(h);
+        return fun.a8 ? fun.a8(a, b, c, d, e, f, g, h) : fun(a)(b)(c)(d)(e)(f)(g)(h);
     }
     function A9(fun, a, b, c, d, e, f, g, h, i) {
-        return fun.a === 9 ? fun.f(a, b, c, d, e, f, g, h, i) : fun(a)(b)(c)(d)(e)(f)(g)(h)(i);
+        return fun.a9 ? fun.a9(a, b, c, d, e, f, g, h, i) : fun(a)(b)(c)(d)(e)(f)(g)(h)(i);
     }
     var _JsArray_empty = [];
     function _JsArray_singleton(value) {
@@ -235,7 +269,6 @@
         }
         return result;
     }, _JsArray_appendN = F3(_JsArray_appendN_fn);
-    // LOG
     var _Debug_log_fn = function (tag, value) {
         return value;
     }, _Debug_log = F2(_Debug_log_fn);
@@ -243,7 +276,6 @@
         console.log(tag + ": " + _Debug_toString(value));
         return value;
     }, _Debug_log_UNUSED = F2(_Debug_log_UNUSED_fn);
-    // TODOS
     function _Debug_todo(moduleName, region) {
         return function (message) {
             _Debug_crash(8, moduleName, region, message);
@@ -254,7 +286,6 @@
             _Debug_crash(9, moduleName, region, value, message);
         };
     }
-    // TO STRING
     function _Debug_toString(value) {
         return "<internals>";
     }
@@ -309,8 +340,7 @@
             if (tag === "::" || tag === "[]") {
                 var output = "[";
                 value.b && (output += _Debug_toAnsiString(ansi, value.a), value = value.b);
-                for (; value.b; value = value.b) // WHILE_CONS
-                 {
+                for (; value.b; value = value.b) {
                     output += "," + _Debug_toAnsiString(ansi, value.a);
                 }
                 return output + "]";
@@ -381,7 +411,6 @@
     function _Debug_toHexDigit(n) {
         return String.fromCharCode(n < 10 ? 48 + n : 55 + n);
     }
-    // CRASH
     function _Debug_crash(identifier) {
         throw new Error("https://github.com/elm/core/blob/1.0.0/hints/" + identifier + ".md");
     }
@@ -432,7 +461,6 @@
         }
         return "on lines " + region.q.fg + " through " + region.n.fg;
     }
-    // EQUALITY
     function _Utils_eq(x, y) {
         for (var pair, stack = [], isEqual = _Utils_eqHelp(x, y, 0, stack); isEqual && (pair = stack.pop()); isEqual = _Utils_eqHelp(pair.a, pair.b, 0, stack)) { }
         return isEqual;
@@ -449,24 +477,10 @@
             stack.push(_Utils_Tuple2(x, y));
             return true;
         }
-        /**_UNUSED/
-        if (x.$ === 'Set_elm_builtin')
-        {
-            x = $elm$core$Set$toList(x);
-            y = $elm$core$Set$toList(y);
-        }
-        if (x.$ === 'RBNode_elm_builtin' || x.$ === 'RBEmpty_elm_builtin')
-        {
-            x = $elm$core$Dict$toList(x);
-            y = $elm$core$Dict$toList(y);
-        }
-        //*/
-        /**/
         if (x.$ < 0) {
             x = $elm$core$Dict$toList(x);
             y = $elm$core$Dict$toList(y);
         }
-        //*/
         for (var key in x) {
             if (!_Utils_eqHelp(x[key], y[key], depth + 1, stack)) {
                 return false;
@@ -476,37 +490,19 @@
     }
     var _Utils_equal = F2(_Utils_eq);
     var _Utils_notEqual_fn = function (a, b) { return !_Utils_eq(a, b); }, _Utils_notEqual = F2(_Utils_notEqual_fn);
-    // COMPARISONS
-    // Code in Generate/JavaScript.hs, Basics.js, and List.js depends on
-    // the particular integer values assigned to LT, EQ, and GT.
     function _Utils_cmp(x, y, ord) {
         if (typeof x !== "object") {
-            return x === y ? /*EQ*/ 0 : x < y ? /*LT*/ -1 : /*GT*/ 1;
+            return x === y ? 0 : x < y ? -1 : 1;
         }
-        /**_UNUSED/
-        if (x instanceof String)
-        {
-            var a = x.valueOf();
-            var b = y.valueOf();
-            return a === b ? 0 : a < b ? -1 : 1;
-        }
-        //*/
-        /**/
-        if (typeof x.$ === "undefined") 
-        //*/
-        /**_UNUSED/
-        if (x.$[0] === '#')
-        //*/
-        {
+        if (typeof x.$ === "undefined") {
             return (ord = _Utils_cmp(x.a, y.a))
                 ? ord
                 : (ord = _Utils_cmp(x.b, y.b))
                     ? ord
                     : _Utils_cmp(x.c, y.c);
         }
-        // traverse conses until end of a list or a mismatch
-        for (; x.b && y.b && !(ord = _Utils_cmp(x.a, y.a)); x = x.b, y = y.b) { } // WHILE_CONSES
-        return ord || (x.b ? /*GT*/ 1 : y.b ? /*LT*/ -1 : /*EQ*/ 0);
+        for (; x.b && y.b && !(ord = _Utils_cmp(x.a, y.a)); x = x.b, y = y.b) { }
+        return ord || (x.b ? 1 : y.b ? -1 : 0);
     }
     var _Utils_lt_fn = function (a, b) { return _Utils_cmp(a, b) < 0; }, _Utils_lt = F2(_Utils_lt_fn);
     var _Utils_le_fn = function (a, b) { return _Utils_cmp(a, b) < 1; }, _Utils_le = F2(_Utils_le_fn);
@@ -516,7 +512,6 @@
         var n = _Utils_cmp(x, y);
         return n < 0 ? $elm$core$Basics$LT : n ? $elm$core$Basics$GT : $elm$core$Basics$EQ;
     }, _Utils_compare = F2(_Utils_compare_fn);
-    // COMMON VALUES
     var _Utils_Tuple0 = 0;
     var _Utils_Tuple0_UNUSED = { $: "#0" };
     function _Utils_Tuple2(a, b) { return { a: a, b: b }; }
@@ -525,7 +520,6 @@
     function _Utils_Tuple3_UNUSED(a, b, c) { return { $: "#3", a: a, b: b, c: c }; }
     function _Utils_chr(c) { return c; }
     function _Utils_chr_UNUSED(c) { return new String(c); }
-    // RECORDS
     function _Utils_update(oldRecord, updatedFields) {
         var newRecord = {};
         for (var key in oldRecord) {
@@ -536,21 +530,17 @@
         }
         return newRecord;
     }
-    // APPEND
     var _Utils_append = F2(_Utils_ap);
     function _Utils_ap(xs, ys) {
-        // append Strings
         if (typeof xs === "string") {
             return xs + ys;
         }
-        // append Lists
         if (!xs.b) {
             return ys;
         }
         var root = _List_Cons(xs.a, ys);
         xs = xs.b;
-        for (var curr = root; xs.b; xs = xs.b) // WHILE_CONS
-         {
+        for (var curr = root; xs.b; xs = xs.b) {
             curr = curr.b = _List_Cons(xs.a, ys);
         }
         return root;
@@ -568,60 +558,51 @@
         return out;
     }
     function _List_toArray(xs) {
-        for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
-         {
+        for (var out = []; xs.b; xs = xs.b) {
             out.push(xs.a);
         }
         return out;
     }
     var _List_map2_fn = function (f, xs, ys) {
-        for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
-         {
+        for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) {
             arr.push(A2(f, xs.a, ys.a));
         }
         return _List_fromArray(arr);
     }, _List_map2_fn_unwrapped = function (f, xs, ys) {
-        for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
-         {
+        for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) {
             arr.push(f(xs.a, ys.a));
         }
         return _List_fromArray(arr);
     }, _List_map2 = F3(_List_map2_fn);
     var _List_map3_fn = function (f, xs, ys, zs) {
-        for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-         {
+        for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) {
             arr.push(A3(f, xs.a, ys.a, zs.a));
         }
         return _List_fromArray(arr);
     }, _List_map3_fn_unwrapped = function (f, xs, ys, zs) {
-        for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-         {
+        for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) {
             arr.push(f(xs.a, ys.a, zs.a));
         }
         return _List_fromArray(arr);
     }, _List_map3 = F4(_List_map3_fn);
     var _List_map4_fn = function (f, ws, xs, ys, zs) {
-        for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-         {
+        for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) {
             arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
         }
         return _List_fromArray(arr);
     }, _List_map4_fn_unwrapped = function (f, ws, xs, ys, zs) {
-        for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-         {
+        for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) {
             arr.push(f(ws.a, xs.a, ys.a, zs.a));
         }
         return _List_fromArray(arr);
     }, _List_map4 = F5(_List_map4_fn);
     var _List_map5_fn = function (f, vs, ws, xs, ys, zs) {
-        for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-         {
+        for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) {
             arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
         }
         return _List_fromArray(arr);
     }, _List_map5_fn_unwrapped = function (f, vs, ws, xs, ys, zs) {
-        for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-         {
+        for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) {
             arr.push(f(vs.a, ws.a, xs.a, ys.a, zs.a));
         }
         return _List_fromArray(arr);
@@ -642,7 +623,6 @@
             return ord === $elm$core$Basics$EQ ? 0 : ord === $elm$core$Basics$LT ? -1 : 1;
         }));
     }, _List_sortWith = F2(_List_sortWith_fn);
-    // MATH
     var _Basics_add_fn = function (a, b) { return a + b; }, _Basics_add = F2(_Basics_add_fn);
     var _Basics_sub_fn = function (a, b) { return a - b; }, _Basics_sub = F2(_Basics_sub_fn);
     var _Basics_mul_fn = function (a, b) { return a * b; }, _Basics_mul = F2(_Basics_mul_fn);
@@ -650,7 +630,6 @@
     var _Basics_idiv_fn = function (a, b) { return (a / b) | 0; }, _Basics_idiv = F2(_Basics_idiv_fn);
     var _Basics_pow_fn = Math.pow, _Basics_pow = F2(_Basics_pow_fn);
     var _Basics_remainderBy_fn = function (b, a) { return a % b; }, _Basics_remainderBy = F2(_Basics_remainderBy_fn);
-    // https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/divmodnote-letter.pdf
     var _Basics_modBy_fn = function (modulus, x) {
         var answer = x % modulus;
         return modulus === 0
@@ -660,7 +639,6 @@
                     ? answer + modulus
                     : answer;
     }, _Basics_modBy = F2(_Basics_modBy_fn);
-    // TRIGONOMETRY
     var _Basics_pi = Math.PI;
     var _Basics_e = Math.E;
     var _Basics_cos = Math.cos;
@@ -670,7 +648,6 @@
     var _Basics_asin = Math.asin;
     var _Basics_atan = Math.atan;
     var _Basics_atan2_fn = Math.atan2, _Basics_atan2 = F2(_Basics_atan2_fn);
-    // MORE MATH
     function _Basics_toFloat(x) { return x; }
     function _Basics_truncate(n) { return n | 0; }
     function _Basics_isInfinite(n) { return n === Infinity || n === -Infinity; }
@@ -680,7 +657,6 @@
     var _Basics_sqrt = Math.sqrt;
     var _Basics_log = Math.log;
     var _Basics_isNaN = isNaN;
-    // BOOLEANS
     function _Basics_not(bool) { return !bool; }
     var _Basics_and_fn = function (a, b) { return a && b; }, _Basics_and = F2(_Basics_and_fn);
     var _Basics_or_fn = function (a, b) { return a || b; }, _Basics_or = F2(_Basics_or_fn);
@@ -892,15 +868,13 @@
         }
         return _List_fromArray(is);
     }, _String_indexes = F2(_String_indexes_fn);
-    // TO STRING
     function _String_fromNumber(number) {
         return number + "";
     }
-    // INT CONVERSIONS
     function _String_toInt(str) {
         var total = 0;
         var code0 = str.charCodeAt(0);
-        var start = code0 == 43 /* + */ || code0 == 45 /* - */ ? 1 : 0;
+        var start = code0 == 43 || code0 == 45 ? 1 : 0;
         for (var i = start; i < str.length; ++i) {
             var code = str.charCodeAt(i);
             if (code < 48 || 57 < code) {
@@ -912,14 +886,11 @@
             ? $elm$core$Maybe$Nothing
             : $elm$core$Maybe$Just(code0 == 45 ? -total : total);
     }
-    // FLOAT CONVERSIONS
     function _String_toFloat(s) {
-        // check if it is a hex, octal, or binary number
         if (s.length === 0 || /[\sxbo]/.test(s)) {
             return $elm$core$Maybe$Nothing;
         }
         var n = +s;
-        // faster isNaN check
         return n === n ? $elm$core$Maybe$Just(n) : $elm$core$Maybe$Nothing;
     }
     function _String_fromList(chars) {
@@ -954,13 +925,6 @@
     function _Char_toLocaleLower(char) {
         return _Utils_chr(char.toLocaleLowerCase());
     }
-    /**_UNUSED/
-    function _Json_errorToString(error)
-    {
-        return $elm$json$Json$Decode$errorToString(error);
-    }
-    //*/
-    // CORE DECODERS
     function _Json_succeed(msg) {
         return {
             $: 0,
@@ -1050,7 +1014,6 @@
             g: decoders
         };
     }
-    // DECODING OBJECTS
     var _Json_map1_fn = function (f, d1) {
         return _Json_mapMany(f, [d1]);
     }, _Json_map1 = F2(_Json_map1_fn);
@@ -1075,7 +1038,6 @@
     var _Json_map8_fn = function (f, d1, d2, d3, d4, d5, d6, d7, d8) {
         return _Json_mapMany(f, [d1, d2, d3, d4, d5, d6, d7, d8]);
     }, _Json_map8 = F9(_Json_map8_fn);
-    // DECODE
     var _Json_runOnString_fn = function (decoder, string) {
         try {
             var value = JSON.parse(string);
@@ -1128,7 +1090,6 @@
                     return _Json_expecting("an OBJECT", value);
                 }
                 var keyValuePairs = _List_Nil;
-                // TODO test perf of Object.keys and switch when support is good enough
                 for (var key in value) {
                     if (value.hasOwnProperty(key)) {
                         var result = _Json_runHelp(decoder.b, value[key]);
@@ -1157,8 +1118,7 @@
                     : _Json_runHelp(decoder.h(result.a), value);
             case 11:
                 var errors = _List_Nil;
-                for (var temp = decoder.g; temp.b; temp = temp.b) // WHILE_CONS
-                 {
+                for (var temp = decoder.g; temp.b; temp = temp.b) {
                     var result = _Json_runHelp(temp.a, value);
                     if ($elm$core$Result$isOk(result)) {
                         return result;
@@ -1193,7 +1153,6 @@
     function _Json_expecting(type, value) {
         return $elm$core$Result$Err($elm$json$Json$Decode$Failure_fn("Expecting " + type, _Json_wrap(value)));
     }
-    // EQUALITY
     function _Json_equality(x, y) {
         if (x === y) {
             return true;
@@ -1237,7 +1196,6 @@
         }
         return true;
     }
-    // ENCODE
     var _Json_encode_fn = function (indentLevel, value) {
         return JSON.stringify(_Json_unwrap(value), null, indentLevel) + "";
     }, _Json_encode = F2(_Json_encode_fn);
@@ -1258,7 +1216,6 @@
         });
     }
     var _Json_encodeNull = _Json_wrap(null);
-    // TASKS
     function _Scheduler_succeed(value) {
         return {
             $: 0,
@@ -1298,7 +1255,6 @@
             b: callback
         };
     }
-    // PROCESSES
     var _Scheduler_guid = 0;
     function _Scheduler_rawSpawn(task) {
         var proc = {
@@ -1336,17 +1292,6 @@
             callback(_Scheduler_succeed(_Utils_Tuple0));
         });
     }
-    /* STEP PROCESSES
-    
-    type alias Process =
-      { $ : tag
-      , id : unique_id
-      , root : Task
-      , stack : null | { $: SUCCEED | FAIL, a: callback, b: stack }
-      , mailbox : [msg]
-      }
-    
-    */
     var _Scheduler_working = false;
     var _Scheduler_queue = [];
     function _Scheduler_enqueue(proc) {
@@ -1386,8 +1331,7 @@
                 }
                 proc.f = proc.f.b(proc.h.shift());
             }
-            else // if (rootTag === 3 || rootTag === 4)
-             {
+            else {
                 proc.g = {
                     $: rootTag === 3 ? 0 : 1,
                     b: proc.f.b,
@@ -1405,14 +1349,12 @@
             return function () { clearTimeout(id); };
         });
     }
-    // PROGRAMS
     var _Platform_worker_fn = function (impl, flagDecoder, debugMetadata, args) {
         return _Platform_initialize(flagDecoder, args, impl.fU, impl.eG, impl.ga, function () { return function () { }; });
     }, _Platform_worker = F4(_Platform_worker_fn);
-    // INITIALIZE A PROGRAM
     function _Platform_initialize(flagDecoder, args, init, update, subscriptions, stepperBuilder) {
         var result = _Json_run_fn(flagDecoder, _Json_wrap(args ? args["flags"] : undefined));
-        $elm$core$Result$isOk(result) || _Debug_crash(2 /**_UNUSED/, _Json_errorToString(result.a) /**/);
+        $elm$core$Result$isOk(result) || _Debug_crash(2);
         var managers = {};
         var initPair = init(result.a);
         var model = initPair.a;
@@ -1426,20 +1368,13 @@
         _Platform_enqueueEffects(managers, initPair.b, subscriptions(model));
         return ports ? { ports: ports } : {};
     }
-    // TRACK PRELOADS
-    //
-    // This is used by code in elm/browser and elm/http
-    // to register any HTTP requests that are triggered by init.
-    //
     var _Platform_preload;
     function _Platform_registerPreload(url) {
         _Platform_preload.add(url);
     }
-    // EFFECT MANAGERS
     var _Platform_effectManagers = {};
     function _Platform_setupEffects(managers, sendToApp) {
         var ports;
-        // setup all necessary effect managers
         for (var key in _Platform_effectManagers) {
             var manager = _Platform_effectManagers[key];
             if (manager.a) {
@@ -1481,7 +1416,6 @@
         }
         return router.h = _Scheduler_rawSpawn(_Scheduler_andThen_fn(loop, info.b));
     }
-    // ROUTING
     var _Platform_sendToApp_fn = function (router, msg) {
         return _Scheduler_binding(function (callback) {
             router.g(msg);
@@ -1494,7 +1428,6 @@
             a: msg
         });
     }, _Platform_sendToSelf = F2(_Platform_sendToSelf_fn);
-    // BAGS
     function _Platform_leaf(home) {
         return function (value) {
             return {
@@ -1517,33 +1450,6 @@
             o: bag
         };
     }, _Platform_map = F2(_Platform_map_fn);
-    // PIPE BAGS INTO EFFECT MANAGERS
-    //
-    // Effects must be queued!
-    //
-    // Say your init contains a synchronous command, like Time.now or Time.here
-    //
-    //   - This will produce a batch of effects (FX_1)
-    //   - The synchronous task triggers the subsequent `update` call
-    //   - This will produce a batch of effects (FX_2)
-    //
-    // If we just start dispatching FX_2, subscriptions from FX_2 can be processed
-    // before subscriptions from FX_1. No good! Earlier versions of this code had
-    // this problem, leading to these reports:
-    //
-    //   https://github.com/elm/core/issues/980
-    //   https://github.com/elm/core/pull/981
-    //   https://github.com/elm/compiler/issues/1776
-    //
-    // The queue is necessary to avoid ordering issues for synchronous commands.
-    // Why use true/false here? Why not just check the length of the queue?
-    // The goal is to detect "are we currently dispatching effects?" If we
-    // are, we need to bail and let the ongoing while loop handle things.
-    //
-    // Now say the queue has 1 element. When we dequeue the final element,
-    // the queue will be empty, but we are still actively dispatching effects.
-    // So you could get queue jumping in a really tricky category of cases.
-    //
     var _Platform_effectsQueue = [];
     var _Platform_effectsActive = false;
     function _Platform_enqueueEffects(managers, cmdBag, subBag) {
@@ -1575,8 +1481,7 @@
                 effectsDict[home] = _Platform_insert(isCmd, effect, effectsDict[home]);
                 return;
             case 2:
-                for (var list = bag.m; list.b; list = list.b) // WHILE_CONS
-                 {
+                for (var list = bag.m; list.b; list = list.b) {
                     _Platform_gatherEffects(isCmd, list.a, effectsDict, taggers);
                 }
                 return;
@@ -1607,13 +1512,11 @@
             : (effects.j = _List_Cons(newEffect, effects.j));
         return effects;
     }
-    // PORTS
     function _Platform_checkPortName(name) {
         if (_Platform_effectManagers[name]) {
             _Debug_crash(3, name);
         }
     }
-    // OUTGOING PORTS
     function _Platform_outgoingPort(name, converter) {
         _Platform_checkPortName(name);
         _Platform_effectManagers[name] = {
@@ -1627,13 +1530,10 @@
     function _Platform_setupOutgoingPort(name) {
         var subs = [];
         var converter = _Platform_effectManagers[name].u;
-        // CREATE MANAGER
         var init = _Process_sleep(0);
         _Platform_effectManagers[name].b = init;
         _Platform_effectManagers[name].c = F3(function (router, cmdList, state) {
-            for (; cmdList.b; cmdList = cmdList.b) // WHILE_CONS
-             {
-                // grab a separate reference to subs in case unsubscribe is called
+            for (; cmdList.b; cmdList = cmdList.b) {
                 var currentSubs = subs;
                 var value = _Json_unwrap(converter(cmdList.a));
                 for (var i = 0; i < currentSubs.length; i++) {
@@ -1642,13 +1542,10 @@
             }
             return init;
         });
-        // PUBLIC API
         function subscribe(callback) {
             subs.push(callback);
         }
         function unsubscribe(callback) {
-            // copy subs into a new array in case unsubscribe is called within a
-            // subscribed callback
             subs = subs.slice();
             var index = subs.indexOf(callback);
             if (index >= 0) {
@@ -1660,7 +1557,6 @@
             unsubscribe: unsubscribe
         };
     }
-    // INCOMING PORTS
     function _Platform_incomingPort(name, converter) {
         _Platform_checkPortName(name);
         _Platform_effectManagers[name] = {
@@ -1678,30 +1574,22 @@
     function _Platform_setupIncomingPort(name, sendToApp) {
         var subs = _List_Nil;
         var converter = _Platform_effectManagers[name].u;
-        // CREATE MANAGER
         var init = _Scheduler_succeed(null);
         _Platform_effectManagers[name].b = init;
         _Platform_effectManagers[name].c = F3(function (router, subList, state) {
             subs = subList;
             return init;
         });
-        // PUBLIC API
         function send(incomingValue) {
             var result = _Json_run_fn(converter, _Json_wrap(incomingValue));
             $elm$core$Result$isOk(result) || _Debug_crash(4, name, result.a);
             var value = result.a;
-            for (var temp = subs; temp.b; temp = temp.b) // WHILE_CONS
-             {
+            for (var temp = subs; temp.b; temp = temp.b) {
                 sendToApp(temp.a(value));
             }
         }
         return { send: send };
     }
-    // EXPORT ELM MODULES
-    //
-    // Have DEBUG and PROD versions so that we can (1) give nicer errors in
-    // debug mode and (2) not pay for the bits needed for that in prod mode.
-    //
     function _Platform_export(exports) {
         scope["Elm"]
             ? _Platform_mergeExportsProd(scope["Elm"], exports)
@@ -1752,7 +1640,6 @@
     var _Bitwise_shiftRightZfBy_fn = function (offset, a) {
         return a >>> offset;
     }, _Bitwise_shiftRightZfBy = F2(_Bitwise_shiftRightZfBy_fn);
-    // STRINGS
     var _Parser_isSubString_fn = function (smallString, offset, row, col, bigString) {
         var smallLength = smallString.length;
         var isGood = offset + smallLength <= bigString.length;
@@ -1760,13 +1647,12 @@
             var code = bigString.charCodeAt(offset);
             isGood =
                 smallString[i++] === bigString[offset++]
-                    && (code === 10 /* \n */
+                    && (code === 10
                         ? (row++, col = 1)
                         : (col++, (code & 63488) === 55296 ? smallString[i++] === bigString[offset++] : 1));
         }
         return _Utils_Tuple3(isGood ? offset : -1, row, col);
     }, _Parser_isSubString = F5(_Parser_isSubString_fn);
-    // CHARS
     var _Parser_isSubChar_fn = function (predicate, offset, string) {
         return (string.length <= offset
             ? -1
@@ -1781,7 +1667,6 @@
     var _Parser_isAsciiCode_fn = function (code, offset, string) {
         return string.charCodeAt(offset) === code;
     }, _Parser_isAsciiCode = F3(_Parser_isAsciiCode_fn);
-    // NUMBERS
     var _Parser_chompBase10_fn = function (offset, string) {
         for (; offset < string.length; offset++) {
             var code = string.charCodeAt(offset);
@@ -1818,47 +1703,36 @@
         }
         return _Utils_Tuple2(offset, total);
     }, _Parser_consumeBase16 = F2(_Parser_consumeBase16_fn);
-    // FIND STRING
     var _Parser_findSubString_fn = function (smallString, offset, row, col, bigString) {
         var newOffset = bigString.indexOf(smallString, offset);
         var target = newOffset < 0 ? bigString.length : newOffset + smallString.length;
         while (offset < target) {
             var code = bigString.charCodeAt(offset++);
-            code === 10 /* \n */
+            code === 10
                 ? (col = 1, row++)
                 : (col++, (code & 63488) === 55296 && offset++);
         }
         return _Utils_Tuple3(newOffset, row, col);
     }, _Parser_findSubString = F5(_Parser_findSubString_fn);
-    // HELPERS
     var _VirtualDom_divertHrefToApp;
     var _VirtualDom_doc = typeof document !== "undefined" ? document : {};
     function _VirtualDom_appendChild(parent, child) {
         parent.appendChild(child);
     }
     var _VirtualDom_init_fn = function (virtualNode, flagDecoder, debugMetadata, args) {
-        // NOTE: this function needs _Platform_export available to work
-        /**/
         var node = args["node"];
-        //*/
-        /**_UNUSED/
-        var node = args && args['node'] ? args['node'] : _Debug_crash(0);
-        //*/
         node.parentNode.replaceChild(_VirtualDom_render(virtualNode, function () { }), node);
         return {};
     }, _VirtualDom_init = F4(_VirtualDom_init_fn);
-    // TEXT
     function _VirtualDom_text(string) {
         return {
             $: 0,
             a: string
         };
     }
-    // NODE
     var _VirtualDom_nodeNS_fn = function (namespace, tag) {
         return F2(function (factList, kidList) {
-            for (var kids = [], descendantsCount = 0; kidList.b; kidList = kidList.b) // WHILE_CONS
-             {
+            for (var kids = [], descendantsCount = 0; kidList.b; kidList = kidList.b) {
                 var kid = kidList.a;
                 descendantsCount += (kid.b || 0);
                 kids.push(kid);
@@ -1875,11 +1749,9 @@
         });
     }, _VirtualDom_nodeNS = F2(_VirtualDom_nodeNS_fn);
     var _VirtualDom_node_a0 = undefined, _VirtualDom_node = _VirtualDom_nodeNS(_VirtualDom_node_a0);
-    // KEYED NODE
     var _VirtualDom_keyedNodeNS_fn = function (namespace, tag) {
         return F2(function (factList, kidList) {
-            for (var kids = [], descendantsCount = 0; kidList.b; kidList = kidList.b) // WHILE_CONS
-             {
+            for (var kids = [], descendantsCount = 0; kidList.b; kidList = kidList.b) {
                 var kid = kidList.a;
                 descendantsCount += (kid.b.b || 0);
                 kids.push(kid);
@@ -1896,7 +1768,6 @@
         });
     }, _VirtualDom_keyedNodeNS = F2(_VirtualDom_keyedNodeNS_fn);
     var _VirtualDom_keyedNode_a0 = undefined, _VirtualDom_keyedNode = _VirtualDom_keyedNodeNS(_VirtualDom_keyedNode_a0);
-    // CUSTOM
     function _VirtualDom_custom(factList, model, render, diff) {
         return {
             $: 3,
@@ -1906,7 +1777,6 @@
             i: diff
         };
     }
-    // MAP
     var _VirtualDom_map_fn = function (tagger, node) {
         return {
             $: 4,
@@ -1915,7 +1785,6 @@
             b: 1 + (node.b || 0)
         };
     }, _VirtualDom_map = F2(_VirtualDom_map_fn);
-    // LAZY
     function _VirtualDom_thunk(refs, thunk) {
         return {
             $: 5,
@@ -1992,7 +1861,6 @@
             return func(a, b, c, d, e, f, g, h);
         });
     }, _VirtualDom_lazy8 = F9(_VirtualDom_lazy8_fn);
-    // FACTS
     var _VirtualDom_on_fn = function (key, handler) {
         return {
             $: "a0",
@@ -2028,18 +1896,6 @@
             o: { f: namespace, o: value }
         };
     }, _VirtualDom_attributeNS = F3(_VirtualDom_attributeNS_fn);
-    // XSS ATTACK VECTOR CHECKS
-    //
-    // For some reason, tabs can appear in href protocols and it still works.
-    // So '\tjava\tSCRIPT:alert("!!!")' and 'javascript:alert("!!!")' are the same
-    // in practice. That is why _VirtualDom_RE_js and _VirtualDom_RE_js_html look
-    // so freaky.
-    //
-    // Pulling the regular expressions out to the top level gives a slight speed
-    // boost in small benchmarks (4-10%) but hoisting values to reduce allocation
-    // can be unpredictable in large programs where JIT may have a harder time with
-    // functions are not fully self-contained. The benefit is more that the js and
-    // js_html ones are so weird that I prefer to see them near each other.
     var _VirtualDom_RE_script = /^script$/i;
     var _VirtualDom_RE_on_formAction = /^(on|formAction$)/i;
     var _VirtualDom_RE_js = /^\s*j\s*a\s*v\s*a\s*s\s*c\s*r\s*i\s*p\s*t\s*:/i;
@@ -2055,31 +1911,24 @@
     }
     function _VirtualDom_noJavaScriptUri(value) {
         return _VirtualDom_RE_js.test(value)
-            ? /**/ "" //*//**_UNUSED/'javascript:alert("This is an XSS vector. Please use ports or web components instead.")'//*/
+            ? ""
             : value;
     }
     function _VirtualDom_noJavaScriptOrHtmlUri(value) {
         return _VirtualDom_RE_js_html.test(value)
-            ? /**/ "" //*//**_UNUSED/'javascript:alert("This is an XSS vector. Please use ports or web components instead.")'//*/
+            ? ""
             : value;
     }
     function _VirtualDom_noJavaScriptOrHtmlJson(value) {
         return (typeof _Json_unwrap(value) === "string" && _VirtualDom_RE_js_html.test(_Json_unwrap(value)))
-            ? _Json_wrap(
-            /**/ "" //*//**_UNUSED/'javascript:alert("This is an XSS vector. Please use ports or web components instead.")'//*/
-            ) : value;
+            ? _Json_wrap("") : value;
     }
-    // MAP FACTS
     var _VirtualDom_mapAttribute_fn = function (func, attr) {
         return (attr.$ === "a0")
             ? _VirtualDom_on_fn(attr.n, _VirtualDom_mapHandler(func, attr.o)) : attr;
     }, _VirtualDom_mapAttribute = F2(_VirtualDom_mapAttribute_fn);
     function _VirtualDom_mapHandler(func, handler) {
         var tag = $elm$virtual_dom$VirtualDom$toHandlerInt(handler);
-        // 0 = Normal
-        // 1 = MayStopPropagation
-        // 2 = MayPreventDefault
-        // 3 = Custom
         return {
             $: handler.$,
             a: !tag
@@ -2098,10 +1947,8 @@
             gG: record.gG
         };
     }, _VirtualDom_mapEventRecord = F2(_VirtualDom_mapEventRecord_fn);
-    // ORGANIZE FACTS
     function _VirtualDom_organizeFacts(factList) {
-        for (var facts = {}; factList.b; factList = factList.b) // WHILE_CONS
-         {
+        for (var facts = {}; factList.b; factList = factList.b) {
             var entry = factList.a;
             var tag = entry.$;
             var key = entry.n;
@@ -2123,7 +1970,6 @@
         var classes = object[key];
         object[key] = classes ? classes + " " + newClass : newClass;
     }
-    // RENDER
     function _VirtualDom_render(vNode, eventNode) {
         var tag = vNode.$;
         if (tag === 5) {
@@ -2151,7 +1997,6 @@
             _VirtualDom_applyFacts(domNode, eventNode, vNode.d);
             return domNode;
         }
-        // at this point `tag` must be 1 or 2
         var domNode = vNode.f
             ? _VirtualDom_doc.createElementNS(vNode.f, vNode.c)
             : _VirtualDom_doc.createElement(vNode.c);
@@ -2164,7 +2009,6 @@
         }
         return domNode;
     }
-    // APPLY FACTS
     function _VirtualDom_applyFacts(domNode, eventNode, facts) {
         for (var key in facts) {
             var value = facts[key];
@@ -2183,14 +2027,12 @@
                                             ((key !== "value" && key !== "checked") || domNode[key] !== value) && (domNode[key] = value);
         }
     }
-    // APPLY STYLES
     function _VirtualDom_applyStyles(domNode, styles) {
         var domNodeStyle = domNode.style;
         for (var key in styles) {
             domNodeStyle[key] = styles[key];
         }
     }
-    // APPLY ATTRS
     function _VirtualDom_applyAttrs(domNode, attrs) {
         for (var key in attrs) {
             var value = attrs[key];
@@ -2199,7 +2041,6 @@
                 : domNode.removeAttribute(key);
         }
     }
-    // APPLY NAMESPACED ATTRS
     function _VirtualDom_applyAttrsNS(domNode, nsAttrs) {
         for (var key in nsAttrs) {
             var pair = nsAttrs[key];
@@ -2210,7 +2051,6 @@
                 : domNode.removeAttributeNS(namespace, key);
         }
     }
-    // APPLY EVENTS
     function _VirtualDom_applyEvents(domNode, eventNode, events) {
         var allCallbacks = domNode.elmFs || (domNode.elmFs = {});
         for (var key in events) {
@@ -2235,7 +2075,6 @@
             allCallbacks[key] = oldCallback;
         }
     }
-    // PASSIVE EVENTS
     var _VirtualDom_passiveSupported;
     try {
         window.addEventListener("t", null, Object.defineProperty({}, "passive", {
@@ -2243,7 +2082,6 @@
         }));
     }
     catch (e) { }
-    // EVENT HANDLERS
     function _VirtualDom_makeCallback(eventNode, initialHandler) {
         function callback(event) {
             var handler = callback.q;
@@ -2252,10 +2090,6 @@
                 return;
             }
             var tag = $elm$virtual_dom$VirtualDom$toHandlerInt(handler);
-            // 0 = Normal
-            // 1 = MayStopPropagation
-            // 2 = MayPreventDefault
-            // 3 = Custom
             var value = result.a;
             var message = !tag ? value : tag < 3 ? value.a : value.cL;
             var stopPropagation = tag == 1 ? value.b : tag == 3 && value.gM;
@@ -2275,7 +2109,7 @@
                 }
                 currentEventNode = currentEventNode.p;
             }
-            currentEventNode(message, stopPropagation); // stopPropagation implies isSync
+            currentEventNode(message, stopPropagation);
         }
         callback.q = initialHandler;
         return callback;
@@ -2283,16 +2117,6 @@
     function _VirtualDom_equalEvents(x, y) {
         return x.$ == y.$ && _Json_equality(x.a, y.a);
     }
-    // DIFF
-    // TODO: Should we do patches like in iOS?
-    //
-    // type Patch
-    //   = At Int Patch
-    //   | Batch (List Patch)
-    //   | Change ...
-    //
-    // How could it not be better?
-    //
     function _VirtualDom_diff(x, y) {
         var patches = [];
         _VirtualDom_diffHelp(x, y, patches, 0);
@@ -2315,8 +2139,6 @@
         }
         var xType = x.$;
         var yType = y.$;
-        // Bail if you run into different types of nodes. Implies that the
-        // structure has changed significantly and it's not worth a diff.
         if (xType !== yType) {
             if (xType === 1 && yType === 2) {
                 y = _VirtualDom_dekey(y);
@@ -2327,7 +2149,6 @@
                 return;
             }
         }
-        // Now we know that both nodes are the same $.
         switch (yType) {
             case 5:
                 var xRefs = x.l;
@@ -2347,7 +2168,6 @@
                 subPatches.length > 0 && _VirtualDom_pushPatch(patches, 1, index, subPatches);
                 return;
             case 4:
-                // gather nested taggers
                 var xTaggers = x.j;
                 var yTaggers = y.j;
                 var nesting = false;
@@ -2367,17 +2187,13 @@
                         : yTaggers.push(ySubNode.j);
                     ySubNode = ySubNode.k;
                 }
-                // Just bail if different numbers of taggers. This implies the
-                // structure of the virtual DOM has changed.
                 if (nesting && xTaggers.length !== yTaggers.length) {
                     _VirtualDom_pushPatch(patches, 0, index, y);
                     return;
                 }
-                // check if taggers are "the same"
                 if (nesting ? !_VirtualDom_pairwiseRefEqual(xTaggers, yTaggers) : xTaggers !== yTaggers) {
                     _VirtualDom_pushPatch(patches, 2, index, yTaggers);
                 }
-                // diff everything below the taggers
                 _VirtualDom_diffHelp(xSubNode, ySubNode, patches, index + 1);
                 return;
             case 0:
@@ -2403,7 +2219,6 @@
                 return;
         }
     }
-    // assumes the incoming arrays are the same length
     function _VirtualDom_pairwiseRefEqual(as, bs) {
         for (var i = 0; i < as.length; i++) {
             if (as[i] !== bs[i]) {
@@ -2413,8 +2228,6 @@
         return true;
     }
     function _VirtualDom_diffNodes(x, y, patches, index, diffKids) {
-        // Bail if obvious indicators have changed. Implies more serious
-        // structural changes such that it's not worth it to diff.
         if (x.c !== y.c || x.f !== y.f) {
             _VirtualDom_pushPatch(patches, 0, index, y);
             return;
@@ -2423,13 +2236,8 @@
         factsDiff && _VirtualDom_pushPatch(patches, 4, index, factsDiff);
         diffKids(x, y, patches, index);
     }
-    // DIFF FACTS
-    // TODO Instead of creating a new diff object, it's possible to just test if
-    // there *is* a diff. During the actual patch, do the diff again and make the
-    // modifications directly. This way, there's no new allocations. Worth it?
     function _VirtualDom_diffFacts(x, y, category) {
         var diff;
-        // look for changes and removals
         for (var xKey in x) {
             if (xKey === "a1" || xKey === "a0" || xKey === "a3" || xKey === "a4") {
                 var subDiff = _VirtualDom_diffFacts(x[xKey], y[xKey] || {}, xKey);
@@ -2439,7 +2247,6 @@
                 }
                 continue;
             }
-            // remove if not in the new facts
             if (!(xKey in y)) {
                 diff = diff || {};
                 diff[xKey] =
@@ -2457,7 +2264,6 @@
             }
             var xValue = x[xKey];
             var yValue = y[xKey];
-            // reference equal, so don't worry about it
             if (xValue === yValue && xKey !== "value" && xKey !== "checked"
                 || category === "a0" && _VirtualDom_equalEvents(xValue, yValue)) {
                 continue;
@@ -2465,7 +2271,6 @@
             diff = diff || {};
             diff[xKey] = yValue;
         }
-        // add new stuff
         for (var yKey in y) {
             if (!(yKey in x)) {
                 diff = diff || {};
@@ -2474,13 +2279,11 @@
         }
         return diff;
     }
-    // DIFF KIDS
     function _VirtualDom_diffKids(xParent, yParent, patches, index) {
         var xKids = xParent.e;
         var yKids = yParent.e;
         var xLen = xKids.length;
         var yLen = yKids.length;
-        // FIGURE OUT IF THERE ARE INSERTS OR REMOVALS
         if (xLen > yLen) {
             _VirtualDom_pushPatch(patches, 6, index, {
                 v: yLen,
@@ -2493,19 +2296,16 @@
                 e: yKids
             });
         }
-        // PAIRWISE DIFF EVERYTHING ELSE
         for (var minLen = xLen < yLen ? xLen : yLen, i = 0; i < minLen; i++) {
             var xKid = xKids[i];
             _VirtualDom_diffHelp(xKid, yKids[i], patches, ++index);
             index += xKid.b || 0;
         }
     }
-    // KEYED DIFF
     function _VirtualDom_diffKeyedKids(xParent, yParent, patches, rootIndex) {
         var localPatches = [];
-        var changes = {}; // Dict String Entry
-        var inserts = []; // Array { index : Int, entry : Entry }
-        // type Entry = { tag : String, vnode : VNode, index : Int, data : _ }
+        var changes = {};
+        var inserts = [];
         var xKids = xParent.e;
         var yKids = yParent.e;
         var xLen = xKids.length;
@@ -2522,7 +2322,6 @@
             var yNode = y.b;
             var newMatch = undefined;
             var oldMatch = undefined;
-            // check if keys match
             if (xKey === yKey) {
                 index++;
                 _VirtualDom_diffHelp(xNode, yNode, localPatches, index);
@@ -2531,7 +2330,6 @@
                 yIndex++;
                 continue;
             }
-            // look ahead 1 to detect insertions and removals.
             var xNext = xKids[xIndex + 1];
             var yNext = yKids[yIndex + 1];
             if (xNext) {
@@ -2544,7 +2342,6 @@
                 var yNextNode = yNext.b;
                 newMatch = xKey === yNextKey;
             }
-            // swap x and y
             if (newMatch && oldMatch) {
                 index++;
                 _VirtualDom_diffHelp(xNode, yNextNode, localPatches, index);
@@ -2557,7 +2354,6 @@
                 yIndex += 2;
                 continue;
             }
-            // insert y
             if (newMatch) {
                 index++;
                 _VirtualDom_insertNode(changes, localPatches, yKey, yNode, yIndex, inserts);
@@ -2567,7 +2363,6 @@
                 yIndex += 2;
                 continue;
             }
-            // remove x
             if (oldMatch) {
                 index++;
                 _VirtualDom_removeNode(changes, localPatches, xKey, xNode, index);
@@ -2579,7 +2374,6 @@
                 yIndex += 1;
                 continue;
             }
-            // remove x, insert y
             if (xNext && xNextKey === yNextKey) {
                 index++;
                 _VirtualDom_removeNode(changes, localPatches, xKey, xNode, index);
@@ -2594,7 +2388,6 @@
             }
             break;
         }
-        // eat up any remaining nodes with removeNode and insertNode
         while (xIndex < xLen) {
             index++;
             var x = xKids[xIndex];
@@ -2617,11 +2410,9 @@
             });
         }
     }
-    // CHANGES FROM KEYED DIFF
     var _VirtualDom_POSTFIX = "_elmW6BL";
     function _VirtualDom_insertNode(changes, localPatches, key, vnode, yIndex, inserts) {
         var entry = changes[key];
-        // never seen this key before
         if (!entry) {
             entry = {
                 c: 0,
@@ -2633,7 +2424,6 @@
             changes[key] = entry;
             return;
         }
-        // this key was removed earlier, a match!
         if (entry.c === 1) {
             inserts.push({ r: yIndex, A: entry });
             entry.c = 2;
@@ -2646,12 +2436,10 @@
             };
             return;
         }
-        // this key has already been inserted or moved, a duplicate!
         _VirtualDom_insertNode(changes, localPatches, key + _VirtualDom_POSTFIX, vnode, yIndex, inserts);
     }
     function _VirtualDom_removeNode(changes, localPatches, key, vnode, index) {
         var entry = changes[key];
-        // never seen this key before
         if (!entry) {
             var patch = _VirtualDom_pushPatch(localPatches, 9, index, undefined);
             changes[key] = {
@@ -2662,7 +2450,6 @@
             };
             return;
         }
-        // this key was inserted earlier, a match!
         if (entry.c === 0) {
             entry.c = 2;
             var subPatches = [];
@@ -2673,19 +2460,11 @@
             });
             return;
         }
-        // this key has already been removed or moved, a duplicate!
         _VirtualDom_removeNode(changes, localPatches, key + _VirtualDom_POSTFIX, vnode, index);
     }
-    // ADD DOM NODES
-    //
-    // Each DOM node has an "index" assigned in order of traversal. It is important
-    // to minimize our crawl over the actual DOM, so these indexes (along with the
-    // descendantsCount of virtual nodes) let us skip touching entire subtrees of
-    // the DOM if we know there are no patches there.
     function _VirtualDom_addDomNodes(domNode, vNode, patches, eventNode) {
         _VirtualDom_addDomNodesHelp(domNode, vNode, patches, 0, 0, vNode.b, eventNode);
     }
-    // assumes `patches` is non-empty and indexes increase monotonically.
     function _VirtualDom_addDomNodesHelp(domNode, vNode, patches, i, low, high, eventNode) {
         var patch = patches[i];
         var index = patch.r;
@@ -2731,7 +2510,6 @@
             }
             return _VirtualDom_addDomNodesHelp(domNode, subNode, patches, i, low + 1, high, domNode.elm_event_node_ref);
         }
-        // tag must be 1 or 2 at this point
         var vKids = vNode.e;
         var childNodes = domNode.childNodes;
         for (var j = 0; j < vKids.length; j++) {
@@ -2748,7 +2526,6 @@
         }
         return i;
     }
-    // APPLY PATCHES
     function _VirtualDom_applyPatches(rootDomNode, oldVirtualNode, patches, eventNode) {
         if (patches.length === 0) {
             return rootDomNode;
@@ -2819,7 +2596,7 @@
             case 5:
                 return patch.s(domNode);
             default:
-                _Debug_crash(10); // 'Ran into an unknown patch!'
+                _Debug_crash(10);
         }
     }
     function _VirtualDom_applyPatchRedraw(domNode, vNode, eventNode) {
@@ -2835,11 +2612,8 @@
     }
     function _VirtualDom_applyPatchReorder(domNode, patch) {
         var data = patch.s;
-        // remove end inserts
         var frag = _VirtualDom_applyPatchReorderEndInsertsHelp(data.y, patch);
-        // removals
         domNode = _VirtualDom_applyPatchesHelp(domNode, data.w);
-        // inserts
         var inserts = data.x;
         for (var i = 0; i < inserts.length; i++) {
             var insert = inserts[i];
@@ -2849,7 +2623,6 @@
                 : _VirtualDom_render(entry.z, patch.u);
             domNode.insertBefore(node, domNode.childNodes[insert.r]);
         }
-        // add end inserts
         if (frag) {
             _VirtualDom_appendChild(domNode, frag);
         }
@@ -2870,15 +2643,12 @@
         return frag;
     }
     function _VirtualDom_virtualize(node) {
-        // TEXT NODES
         if (node.nodeType === 3) {
             return _VirtualDom_text(node.textContent);
         }
-        // WEIRD NODES
         if (node.nodeType !== 1) {
             return _VirtualDom_text("");
         }
-        // ELEMENT NODES
         var attrList = _List_Nil;
         var attrs = node.attributes;
         for (var i = attrs.length; i--;) {
@@ -2911,17 +2681,11 @@
             b: keyedNode.b
         };
     }
-    // ELEMENT
     var _Debugger_element;
     var _Browser_element = _Debugger_element || F4(function (impl, flagDecoder, debugMetadata, args) {
         return _Platform_initialize(flagDecoder, args, impl.fU, impl.eG, impl.ga, function (sendToApp, initialModel) {
             var view = impl.a5;
-            /**/
             var domNode = args["node"];
-            //*/
-            /**_UNUSED/
-            var domNode = args && args['node'] ? args['node'] : _Debug_crash(0);
-            //*/
             var currNode = _VirtualDom_virtualize(domNode);
             return _Browser_makeAnimator(initialModel, function (model) {
                 var nextNode = view(model);
@@ -2931,7 +2695,6 @@
             });
         });
     });
-    // DOCUMENT
     var _Debugger_document;
     var _Browser_document = _Debugger_document || F4(function (impl, flagDecoder, debugMetadata, args) {
         return _Platform_initialize(flagDecoder, args, impl.fU, impl.eG, impl.ga, function (sendToApp, initialModel) {
@@ -2952,7 +2715,6 @@
             });
         });
     });
-    // ANIMATION
     var _Browser_cancelAnimationFrame = typeof cancelAnimationFrame !== "undefined"
         ? cancelAnimationFrame
         : function (id) { clearTimeout(id); };
@@ -2976,7 +2738,6 @@
                     state = 2);
         };
     }
-    // APPLICATION
     function _Browser_application(impl) {
         var onUrlChange = impl.i$;
         var onUrlRequest = impl.i0;
@@ -3030,7 +2791,6 @@
             key();
         }));
     }, _Browser_replaceUrl = F2(_Browser_replaceUrl_fn);
-    // GLOBAL EVENTS
     var _Browser_fakeNode = { addEventListener: function () { }, removeEventListener: function () { } };
     var _Browser_doc = typeof document !== "undefined" ? document : _Browser_fakeNode;
     var _Browser_window = typeof window !== "undefined" ? window : _Browser_fakeNode;
@@ -3045,7 +2805,6 @@
         var result = _Json_runHelp(decoder, event);
         return $elm$core$Result$isOk(result) ? $elm$core$Maybe$Just(result.a) : $elm$core$Maybe$Nothing;
     }, _Browser_decodeEvent = F2(_Browser_decodeEvent_fn);
-    // PAGE VISIBILITY
     function _Browser_visibilityInfo() {
         return (typeof _VirtualDom_doc.hidden !== "undefined")
             ? { iu: "hidden", h$: "visibilitychange" }
@@ -3060,7 +2819,6 @@
                                     ? { iu: "webkitHidden", h$: "webkitvisibilitychange" }
                                     : { iu: "hidden", h$: "visibilitychange" };
     }
-    // ANIMATION FRAMES
     function _Browser_rAF() {
         return _Scheduler_binding(function (callback) {
             var id = _Browser_requestAnimationFrame(function () {
@@ -3076,7 +2834,6 @@
             callback(_Scheduler_succeed(Date.now()));
         });
     }
-    // DOM STUFF
     function _Browser_withNode(id, doStuff) {
         return _Scheduler_binding(function (callback) {
             _Browser_requestAnimationFrame(function () {
@@ -3094,14 +2851,12 @@
             });
         });
     }
-    // FOCUS and BLUR
     var _Browser_call_fn = function (functionName, id) {
         return _Browser_withNode(id, function (node) {
             node[functionName]();
             return _Utils_Tuple0;
         });
     }, _Browser_call = F2(_Browser_call_fn);
-    // WINDOW VIEWPORT
     function _Browser_getViewport() {
         return {
             bD: _Browser_getScene(),
@@ -3127,7 +2882,6 @@
             return _Utils_Tuple0;
         });
     }, _Browser_setViewport = F2(_Browser_setViewport_fn);
-    // ELEMENT VIEWPORT
     function _Browser_getViewportOf(id) {
         return _Browser_withNode(id, function (node) {
             return {
@@ -3151,7 +2905,6 @@
             return _Utils_Tuple0;
         });
     }, _Browser_setViewportOf = F3(_Browser_setViewportOf_fn);
-    // ELEMENT
     function _Browser_getElement(id) {
         return _Browser_withNode(id, function (node) {
             var rect = node.getBoundingClientRect();
@@ -3174,7 +2927,6 @@
             };
         });
     }
-    // LOAD and RELOAD
     function _Browser_reload(skipCache) {
         return $elm$core$Task$perform_fn($elm$core$Basics$never, _Scheduler_binding(function (callback) {
             _VirtualDom_doc.location.reload(skipCache);
@@ -3186,13 +2938,10 @@
                 _Browser_window.location = url;
             }
             catch (err) {
-                // Only Firefox can throw a NS_ERROR_MALFORMED_URI exception here.
-                // Other browsers reload the page, so let's be consistent about that.
                 _VirtualDom_doc.location.reload(false);
             }
         }));
     }
-    // BYTES
     function _Bytes_width(bytes) {
         return bytes.byteLength;
     }
@@ -3201,24 +2950,19 @@
             callback(_Scheduler_succeed(new Uint8Array(new Uint32Array([1]))[0] === 1 ? le : be));
         });
     }, _Bytes_getHostEndianness = F2(_Bytes_getHostEndianness_fn);
-    // ENCODERS
     function _Bytes_encode(encoder) {
         var mutableBytes = new DataView(new ArrayBuffer($elm$bytes$Bytes$Encode$getWidth(encoder)));
         $elm$bytes$Bytes$Encode$write(encoder)(mutableBytes)(0);
         return mutableBytes;
     }
-    // SIGNED INTEGERS
     var _Bytes_write_i8_fn = function (mb, i, n) { mb.setInt8(i, n); return i + 1; }, _Bytes_write_i8 = F3(_Bytes_write_i8_fn);
     var _Bytes_write_i16_fn = function (mb, i, n, isLE) { mb.setInt16(i, n, isLE); return i + 2; }, _Bytes_write_i16 = F4(_Bytes_write_i16_fn);
     var _Bytes_write_i32_fn = function (mb, i, n, isLE) { mb.setInt32(i, n, isLE); return i + 4; }, _Bytes_write_i32 = F4(_Bytes_write_i32_fn);
-    // UNSIGNED INTEGERS
     var _Bytes_write_u8_fn = function (mb, i, n) { mb.setUint8(i, n); return i + 1; }, _Bytes_write_u8 = F3(_Bytes_write_u8_fn);
     var _Bytes_write_u16_fn = function (mb, i, n, isLE) { mb.setUint16(i, n, isLE); return i + 2; }, _Bytes_write_u16 = F4(_Bytes_write_u16_fn);
     var _Bytes_write_u32_fn = function (mb, i, n, isLE) { mb.setUint32(i, n, isLE); return i + 4; }, _Bytes_write_u32 = F4(_Bytes_write_u32_fn);
-    // FLOATS
     var _Bytes_write_f32_fn = function (mb, i, n, isLE) { mb.setFloat32(i, n, isLE); return i + 4; }, _Bytes_write_f32 = F4(_Bytes_write_f32_fn);
     var _Bytes_write_f64_fn = function (mb, i, n, isLE) { mb.setFloat64(i, n, isLE); return i + 8; }, _Bytes_write_f64 = F4(_Bytes_write_f64_fn);
-    // BYTES
     var _Bytes_write_bytes_fn = function (mb, offset, bytes) {
         for (var i = 0, len = bytes.byteLength, limit = len - 4; i <= limit; i += 4) {
             mb.setUint32(offset + i, bytes.getUint32(i));
@@ -3228,7 +2972,6 @@
         }
         return offset + len;
     }, _Bytes_write_bytes = F3(_Bytes_write_bytes_fn);
-    // STRINGS
     function _Bytes_getStringWidth(string) {
         for (var width = 0, i = 0; i < string.length; i++) {
             var code = string.charCodeAt(i);
@@ -3248,30 +2991,29 @@
                         , 1)
                     :
                         (code < 2048)
-                            ? (mb.setUint16(offset, 49280 /* 0b1100000010000000 */
-                                | (code >>> 6 & 31 /* 0b00011111 */) << 8
-                                | code & 63 /* 0b00111111 */)
+                            ? (mb.setUint16(offset, 49280
+                                | (code >>> 6 & 31) << 8
+                                | code & 63)
                                 , 2)
                             :
                                 (code < 55296 || 56319 < code)
-                                    ? (mb.setUint16(offset, 57472 /* 0b1110000010000000 */
-                                        | (code >>> 12 & 15 /* 0b00001111 */) << 8
-                                        | code >>> 6 & 63 /* 0b00111111 */)
-                                        , mb.setUint8(offset + 2, 128 /* 0b10000000 */
-                                            | code & 63 /* 0b00111111 */)
+                                    ? (mb.setUint16(offset, 57472
+                                        | (code >>> 12 & 15) << 8
+                                        | code >>> 6 & 63)
+                                        , mb.setUint8(offset + 2, 128
+                                            | code & 63)
                                         , 3)
                                     :
                                         (code = (code - 55296) * 1024 + string.charCodeAt(++i) - 56320 + 65536
-                                            , mb.setUint32(offset, 4034953344 /* 0b11110000100000001000000010000000 */
-                                                | (code >>> 18 & 7 /* 0b00000111 */) << 24
-                                                | (code >>> 12 & 63 /* 0b00111111 */) << 16
-                                                | (code >>> 6 & 63 /* 0b00111111 */) << 8
-                                                | code & 63 /* 0b00111111 */)
+                                            , mb.setUint32(offset, 4034953344
+                                                | (code >>> 18 & 7) << 24
+                                                | (code >>> 12 & 63) << 16
+                                                | (code >>> 6 & 63) << 8
+                                                | code & 63)
                                             , 4);
         }
         return offset;
     }, _Bytes_write_string = F3(_Bytes_write_string_fn);
-    // DECODER
     var _Bytes_decode_fn = function (decoder, bytes) {
         try {
             return $elm$core$Maybe$Just(A2(decoder, bytes, 0).b);
@@ -3307,19 +3049,19 @@
                 (byte < 128)
                     ? String.fromCharCode(byte)
                     :
-                        ((byte & 224 /* 0b11100000 */) === 192 /* 0b11000000 */)
-                            ? String.fromCharCode((byte & 31 /* 0b00011111 */) << 6 | bytes.getUint8(offset++) & 63 /* 0b00111111 */)
+                        ((byte & 224) === 192)
+                            ? String.fromCharCode((byte & 31) << 6 | bytes.getUint8(offset++) & 63)
                             :
-                                ((byte & 240 /* 0b11110000 */) === 224 /* 0b11100000 */)
-                                    ? String.fromCharCode((byte & 15 /* 0b00001111 */) << 12
-                                        | (bytes.getUint8(offset++) & 63 /* 0b00111111 */) << 6
-                                        | bytes.getUint8(offset++) & 63 /* 0b00111111 */)
+                                ((byte & 240) === 224)
+                                    ? String.fromCharCode((byte & 15) << 12
+                                        | (bytes.getUint8(offset++) & 63) << 6
+                                        | bytes.getUint8(offset++) & 63)
                                     :
                                         (byte =
-                                            ((byte & 7 /* 0b00000111 */) << 18
-                                                | (bytes.getUint8(offset++) & 63 /* 0b00111111 */) << 12
-                                                | (bytes.getUint8(offset++) & 63 /* 0b00111111 */) << 6
-                                                | bytes.getUint8(offset++) & 63 /* 0b00111111 */) - 65536
+                                            ((byte & 7) << 18
+                                                | (bytes.getUint8(offset++) & 63) << 12
+                                                | (bytes.getUint8(offset++) & 63) << 6
+                                                | bytes.getUint8(offset++) & 63) - 65536
                                             , String.fromCharCode(Math.floor(byte / 1024) + 55296, byte % 1024 + 56320));
         }
         return _Utils_Tuple2(offset, string);
@@ -3336,7 +3078,6 @@
             return $elm$core$Maybe$Nothing;
         }
     }
-    // SEND REQUEST
     var _Http_toTask_fn = function (router, toTask, request) {
         return _Scheduler_binding(function (callback) {
             function done(response) {
@@ -3359,21 +3100,17 @@
             return function () { xhr.c = true; xhr.abort(); };
         });
     }, _Http_toTask = F3(_Http_toTask_fn);
-    // CONFIGURE
     function _Http_configureRequest(xhr, request) {
-        for (var headers = request.fb; headers.b; headers = headers.b) // WHILE_CONS
-         {
+        for (var headers = request.fb; headers.b; headers = headers.b) {
             xhr.setRequestHeader(headers.a.a, headers.a.b);
         }
         xhr.timeout = request.gP.a || 0;
         xhr.responseType = request.$8.d;
         xhr.withCredentials = request.hQ;
     }
-    // RESPONSES
     function _Http_toResponse(toBody, xhr) {
         return A2(200 <= xhr.status && xhr.status < 300 ? $elm$http$Http$GoodStatus_ : $elm$http$Http$BadStatus_, _Http_toMetadata(xhr), toBody(xhr.response));
     }
-    // METADATA
     function _Http_toMetadata(xhr) {
         return {
             fC: xhr.responseURL,
@@ -3382,7 +3119,6 @@
             fb: _Http_parseHeaders(xhr.getAllResponseHeaders())
         };
     }
-    // HEADERS
     function _Http_parseHeaders(rawHeaders) {
         if (!rawHeaders) {
             return $elm$core$Dict$empty;
@@ -3404,7 +3140,6 @@
         }
         return headers;
     }
-    // EXPECT
     var _Http_expect_fn = function (type, toBody, toValue) {
         return {
             $: 0,
@@ -3424,12 +3159,10 @@
     function _Http_toDataView(arrayBuffer) {
         return new DataView(arrayBuffer);
     }
-    // BODY and PARTS
     var _Http_emptyBody = { $: 0 };
     var _Http_pair_fn = function (a, b) { return { $: 0, a: a, b: b }; }, _Http_pair = F2(_Http_pair_fn);
     function _Http_toFormData(parts) {
-        for (var formData = new FormData(); parts.b; parts = parts.b) // WHILE_CONS
-         {
+        for (var formData = new FormData(); parts.b; parts = parts.b) {
             var part = parts.a;
             formData.append(part.a, part.b);
         }
@@ -3438,9 +3171,7 @@
     var _Http_bytesToBlob_fn = function (mime, bytes) {
         return new Blob([bytes], { type: mime });
     }, _Http_bytesToBlob = F2(_Http_bytesToBlob_fn);
-    // PROGRESS
     function _Http_track(router, xhr, tracker) {
-        // TODO check out lengthComputable on loadstart event
         xhr.upload.addEventListener("progress", function (event) {
             if (xhr.c) {
                 return;
@@ -3489,7 +3220,7 @@
     }
     var wireRefs = (function () {
         var refs = new Map();
-        var counter = 0; // uInt32 max
+        var counter = 0;
         var f = {};
         f.add = function (obj) {
             counter++;
@@ -3525,20 +3256,16 @@
         return (typeof value === "object" && value instanceof DataView)
             ? $elm$core$Result$Ok(value)
             : _Json_expecting("a DataView", value);
-        // : console.log('error: expecting DataView, got', value) ;
     });
     var _LamderaCodecs_debug = function (s) {
         console.log(s);
         return _Utils_Tuple0;
     };
-    // Duplicate of _Bytes_decode that expects all bytes to be consumed,
-    // otherwise it fails to decode.
     var _LamderaCodecs_bytesDecodeStrict_fn = function (decoder, bytes) {
         try {
             var res = A2(decoder, bytes, 0);
             const w = bytes.byteLength;
             if (w !== res.a) {
-                // For now just log issues, in future we'll actually fail on this case
                 console.log(`❌ bytesDecodeStrict did not consume all bytes: length:${w}, consumed:${res.a}`, res.b, new Uint8Array(bytes.buffer));
             }
             return $elm$core$Maybe$Just(res.b);
@@ -3552,7 +3279,6 @@
             var res = decoder(bytes, 0);
             const w = bytes.byteLength;
             if (w !== res.a) {
-                // For now just log issues, in future we'll actually fail on this case
                 console.log(`❌ bytesDecodeStrict did not consume all bytes: length:${w}, consumed:${res.a}`, res.b, new Uint8Array(bytes.buffer));
             }
             return $elm$core$Maybe$Just(res.b);
@@ -3806,7 +3532,23 @@
         return $elm$core$List$rangeHelp_fn(lo, hi, _List_Nil);
     }, $elm$core$List$range = F2($elm$core$List$range_fn);
     var $elm$core$List$indexedMap_fn = function (f, xs) {
-        return _List_map2_fn(f, $elm$core$List$range_fn(0, $elm$core$List$length(xs) - 1), xs);
+        var tmp = _List_Cons(undefined, _List_Nil);
+        var end = tmp;
+        for (var i = 0; xs.b; i++, xs = xs.b) {
+            var next = _List_Cons(A2(f, i, xs.a), _List_Nil);
+            end.b = next;
+            end = next;
+        }
+        return tmp.b;
+    }, $elm$core$List$indexedMap_fn_unwrapped = function (f, xs) {
+        var tmp = _List_Cons(undefined, _List_Nil);
+        var end = tmp;
+        for (var i = 0; xs.b; i++, xs = xs.b) {
+            var next = _List_Cons(f(i, xs.a), _List_Nil);
+            end.b = next;
+            end = next;
+        }
+        return tmp.b;
     }, $elm$core$List$indexedMap = F2($elm$core$List$indexedMap_fn);
     var $elm$core$Char$toCode = _Char_toCode;
     var $elm$core$Char$isLower = function (_char) {
@@ -4179,12 +3921,15 @@
         return $elm$core$List$foldrHelper_fn(fn, acc, 0, ls);
     }, $elm$core$List$foldr = F3($elm$core$List$foldr_fn);
     var $elm$core$List$append_fn = function (xs, ys) {
-        if (!ys.b) {
-            return xs;
+        var tmp = _List_Cons(undefined, _List_Nil);
+        var end = tmp;
+        for (; xs.b; xs = xs.b) {
+            var next = _List_Cons(xs.a, _List_Nil);
+            end.b = next;
+            end = next;
         }
-        else {
-            return $elm$core$List$foldr_fn($elm$core$List$cons, ys, xs);
-        }
+        end.b = ys;
+        return tmp.b;
     }, $elm$core$List$append = F2($elm$core$List$append_fn);
     var $author$project$Head$FullUrlToCurrentPage = { $: 2 };
     var $author$project$Head$currentPageFullUrl = $author$project$Head$FullUrlToCurrentPage;
@@ -4241,9 +3986,15 @@
         return $elm$core$List$foldr_fn($elm$core$List$maybeCons(f), _List_Nil, xs);
     }, $elm$core$List$filterMap = F2($elm$core$List$filterMap_fn);
     var $elm$core$List$map_fn = function (f, xs) {
-        return $elm$core$List$foldr_fn(F2(function (x, acc) {
-            return _List_Cons(f(x), acc);
-        }), _List_Nil, xs);
+        var tmp = _List_Cons(undefined, _List_Nil);
+        var end = tmp;
+        for (; xs.b; xs
+            = xs.b) {
+            var next = _List_Cons(f(xs.a), _List_Nil);
+            end.b = next;
+            end = next;
+        }
+        return tmp.b;
     }, $elm$core$List$map = F2($elm$core$List$map_fn);
     var $author$project$Head$metaName_fn = function (name, content) {
         return $author$project$Head$node_fn("meta", _List_fromArray([
@@ -5696,10 +5447,18 @@
         return "/" + path;
     };
     var $author$project$Route$baseUrl = "/elm-pages";
-    var $elm$core$List$filter_fn = function (isGood, list) {
-        return $elm$core$List$foldr_fn(F2(function (x, xs) {
-            return isGood(x) ? _List_Cons(x, xs) : xs;
-        }), _List_Nil, list);
+    var $elm$core$List$filter_fn = function (f, xs) {
+        var tmp = _List_Cons(undefined, _List_Nil);
+        var end = tmp;
+        for (; xs.b; xs = xs.b) {
+            if (f(xs.a)) {
+                var next = _List_Cons(xs.a, _List_Nil);
+                end.b = next;
+                end = next;
+            }
+        }
+        return tmp.
+            b;
     }, $elm$core$List$filter = F2($elm$core$List$filter_fn);
     var $author$project$Route$baseUrlAsPath = $elm$core$List$filter_fn(function (item) {
         return !$elm$core$String$isEmpty(item);
@@ -5746,7 +5505,21 @@
         return $author$project$Path$normalize(path);
     };
     var $elm$core$List$concat = function (lists) {
-        return $elm$core$List$foldr_fn($elm$core$List$append, _List_Nil, lists);
+        if (!lists.b) {
+            return _List_Nil;
+        }
+        var tmp = _List_Cons(undefined, _List_Nil);
+        var end = tmp;
+        for (; lists.b.b; lists = lists.b) {
+            var xs = lists.a;
+            for (; xs.b; xs = xs.b) {
+                var next = _List_Cons(xs.a, _List_Nil);
+                end.b = next;
+                end = next;
+            }
+        }
+        end.b = lists.a;
+        return tmp.b;
     };
     var $author$project$Route$routeToPath = function (route) {
         return $elm$core$List$concat(function () {
@@ -5839,7 +5612,19 @@
         return g(f(x));
     }, $elm$core$Basics$composeL = F3($elm$core$Basics$composeL_fn);
     var $elm$core$List$all_fn = function (isOkay, list) {
-        return !$elm$core$List$any_fn(A2($elm$core$Basics$composeL, $elm$core$Basics$not, isOkay), list);
+        all: while (true) {
+            if (!list.b) {
+                return true;
+            }
+            else {
+                var x = list.a;
+                if (!isOkay(x)) {
+                    return false;
+                }
+                list = list.b;
+                continue all;
+            }
+        }
     }, $elm$core$List$all = F2($elm$core$List$all_fn);
     var $elm$core$Dict$Black = 1;
     var $elm$core$Dict$RBNode_elm_builtin_fn = function (a, b, c, d, e) {
@@ -6191,8 +5976,23 @@
         var charset = _v0.dV;
         return $rtfeldman$elm_css$Css$Structure$Output$charsetToString(charset) + ($rtfeldman$elm_css$Css$String$mapJoin_fn($rtfeldman$elm_css$Css$Structure$Output$importToString, "\n", imports) + ($rtfeldman$elm_css$Css$String$mapJoin_fn($rtfeldman$elm_css$Css$Structure$Output$namespaceToString, "\n", namespaces) + ($rtfeldman$elm_css$Css$String$mapJoin_fn($rtfeldman$elm_css$Css$Structure$Output$prettyPrintDeclaration, "\n", declarations) + "")));
     };
-    var $elm$core$List$concatMap_fn = function (f, list) {
-        return $elm$core$List$concat($elm$core$List$map_fn(f, list));
+    var $elm$core$List$concatMap_fn = function (f, lists) {
+        if (!lists.b) {
+            return _List_Nil;
+        }
+        var tmp = _List_Cons(undefined, _List_Nil);
+        var end = tmp;
+        for (; lists.b.
+            b; lists = lists.b) {
+            var xs = f(lists.a);
+            for (; xs.b; xs = xs.b) {
+                var next = _List_Cons(xs.a, _List_Nil);
+                end.b = next;
+                end = next;
+            }
+        }
+        end.b = f(lists.a);
+        return tmp.b;
     }, $elm$core$List$concatMap = F2($elm$core$List$concatMap_fn);
     var $rtfeldman$elm_css$Css$Structure$CounterStyle = function (a) {
         return { $: 8, a: a };
@@ -6784,8 +6584,16 @@
             return _List_fromArray([x]);
         }
     }, $elm$core$List$takeFast = F3($elm$core$List$takeFast_fn);
-    var $elm$core$List$take_fn = function (n, list) {
-        return $elm$core$List$takeFast_fn(0, n, list);
+    var $elm$core$List$take_fn = function (n, xs) {
+        var tmp = _List_Cons(undefined, _List_Nil);
+        var end = tmp;
+        for (var i = 0; i < n && xs.b; xs = xs.
+            b, i++) {
+            var next = _List_Cons(xs.a, _List_Nil);
+            end.b = next;
+            end = next;
+        }
+        return tmp.b;
     }, $elm$core$List$take = F2($elm$core$List$take_fn);
     var $rtfeldman$elm_css$Css$Preprocess$Resolve$toDocumentRule_fn = function (str1, str2, str3, str4, declaration) {
         if (!declaration.$) {
@@ -7594,19 +7402,19 @@
     }, $elm$core$Result$fromMaybe = F2($elm$core$Result$fromMaybe_fn);
     var $author$project$QueryParams$QueryParams = $elm$core$Basics$identity;
     var $author$project$QueryParams$fromString = $elm$core$Basics$identity;
-    var $elm$html$Html$div = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "div"), $elm$html$Html$div_fn = $elm$html$Html$div.f;
-    var $elm$html$Html$br = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "br"), $elm$html$Html$br_fn = $elm$html$Html$br.f;
-    var $elm$html$Html$code = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "code"), $elm$html$Html$code_fn = $elm$html$Html$code.f;
-    var $elm$html$Html$h1 = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "h1"), $elm$html$Html$h1_fn = $elm$html$Html$h1.f;
+    var $elm$html$Html$div = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "div"), $elm$html$Html$div_fn = $elm$html$Html$div.a2;
+    var $elm$html$Html$br = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "br"), $elm$html$Html$br_fn = $elm$html$Html$br.a2;
+    var $elm$html$Html$code = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "code"), $elm$html$Html$code_fn = $elm$html$Html$code.a2;
+    var $elm$html$Html$h1 = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "h1"), $elm$html$Html$h1_fn = $elm$html$Html$h1.a2;
     var $elm$html$Html$Attributes$stringProperty_fn = function (key, string) {
         return _VirtualDom_property_fn(key, $elm$json$Json$Encode$string(string));
     }, $elm$html$Html$Attributes$stringProperty = F2($elm$html$Html$Attributes$stringProperty_fn);
     var $elm$html$Html$Attributes$id_a0 = "id", $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty($elm$html$Html$Attributes$id_a0);
-    var $elm$html$Html$li = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "li"), $elm$html$Html$li_fn = $elm$html$Html$li.f;
+    var $elm$html$Html$li = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "li"), $elm$html$Html$li_fn = $elm$html$Html$li.a2;
     var $author$project$Pages$Internal$NotFoundReason$moduleName = function (moduleContext) {
         return $elm$core$String$join_fn("/", _List_Cons("src", moduleContext.hk)) + ".elm";
     };
-    var $elm$html$Html$p = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "p"), $elm$html$Html$p_fn = $elm$html$Html$p.f;
+    var $elm$html$Html$p = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "p"), $elm$html$Html$p_fn = $elm$html$Html$p.a2;
     var $author$project$Pages$Internal$NotFoundReason$recordToString = function (fields) {
         return "{ " + ($elm$core$String$join_fn(", ", $elm$core$List$map_fn(function (_v0) {
             var key = _v0.a;
@@ -7617,7 +7425,7 @@
     var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
     var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
     var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-    var $elm$html$Html$ul = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "ul"), $elm$html$Html$ul_fn = $elm$html$Html$ul.f;
+    var $elm$html$Html$ul = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "ul"), $elm$html$Html$ul_fn = $elm$html$Html$ul.a2;
     var $author$project$Pages$Internal$NotFoundReason$prerenderedOptionsView_fn = function (moduleContext, routes) {
         if (!routes.b) {
             return $elm$html$Html$div_fn(_List_Nil, _List_fromArray([
@@ -7687,7 +7495,7 @@
             ]));
         }
     }, $author$project$Pages$Internal$NotFoundReason$prerenderedOptionsView = F2($author$project$Pages$Internal$NotFoundReason$prerenderedOptionsView_fn);
-    var $elm$html$Html$span = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "span"), $elm$html$Html$span_fn = $elm$html$Html$span.f;
+    var $elm$html$Html$span = _VirtualDom_nodeNS_fn(_VirtualDom_node_a0, "span"), $elm$html$Html$span_fn = $elm$html$Html$span.a2;
     var $author$project$Pages$Internal$RoutePattern$segmentToString = function (segment) {
         if (!segment.$) {
             var string = segment.a;
@@ -11880,17 +11688,13 @@
     var isBackend = false && typeof isLamdera !== "undefined";
     function _Platform_initialize(flagDecoder, args, init, update, subscriptions, stepperBuilder) {
         var result = _Json_run_fn(flagDecoder, _Json_wrap(args ? args["flags"] : undefined));
-        // @TODO need to figure out how to get this to automatically escape by mode?
-        //$elm$core$Result$isOk(result) || _Debug_crash(2 /**/, _Json_errorToString(result.a) /**/);
-        $elm$core$Result$isOk(result) || _Debug_crash(2 /**_UNUSED/, _Json_errorToString(result.a) /**/);
+        $elm$core$Result$isOk(result) || _Debug_crash(2);
         var managers = {};
         var initPair = init(result.a);
         var model = (args && args["model"]) || initPair.a;
         var stepper = stepperBuilder(sendToApp, model);
         var ports = _Platform_setupEffects(managers, sendToApp);
         var pos = 0;
-        //console.log('managers', managers)
-        //console.log('ports', ports)
         var dead = false;
         var upgradeMode = false;
         function mtime() {
@@ -11905,13 +11709,9 @@
                 return;
             }
             if (upgradeMode) {
-                // console.log('sendToApp.inactive',msg);
-                // No more messages should run in upgrade mode
-                // @TODO redirect messages somewhere
                 _Platform_enqueueEffects(managers, $elm$core$Platform$Cmd$none, $elm$core$Platform$Sub$none);
                 return;
             }
-            //console.log('sendToApp.active',msg);
             var serializeDuration, logDuration = null;
             var start = mtime();
             try {
@@ -11933,14 +11733,10 @@
                 insertEvent(pos, global.config.version, s.a, updateDuration, serializeDuration, $elm$core$Maybe$withDefault_fn(null, s.b));
                 logDuration = mtime() - start;
             }
-            // console.log(`model size: ${global.sizeof(pair.a)}`);
-            // console.log(pair.a);
             stepper(model = pair.a, viewMetadata);
-            //console.log('cmds', pair.b);
             _Platform_enqueueEffects(managers, pair.b, subscriptions(model));
             const stepEnqueueDuration = mtime() - start;
             if (isBackend) {
-                //console.log({serialize: serializeDuration, log: logDuration, update: updateDuration, stepEnqueue: stepEnqueueDuration})
             }
         }
         if ((args && args["model"]) === undefined) {
@@ -11948,7 +11744,6 @@
         }
         var fns = {};
         const die = function () {
-            //console.log('App dying');
             managers = null;
             model = null;
             stepper = null;
