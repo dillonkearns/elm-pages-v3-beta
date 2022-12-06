@@ -6,7 +6,7 @@ import Dict exposing (Dict)
 import Dict.Extra
 import Pages.Internal.NotFoundReason exposing (NotFoundReason)
 import Pages.StaticHttp.Request as HashRequest
-import Pages.StaticHttpRequest as StaticHttpRequest
+import Pages.StaticHttpRequest as StaticHttpRequest exposing (RequestResult(..))
 import RequestsAndPending exposing (RequestsAndPending)
 import Set exposing (Set)
 
@@ -112,10 +112,14 @@ nextStep :
     -> ( StaticResponses, NextStep route )
 nextStep ({ allRawResponses, errors } as model) maybeRoutes =
     let
+        _ =
+            Debug.log "nextStep" allRawResponses
+
         staticRequestsStatus : StaticHttpRequest.Status ()
         staticRequestsStatus =
             allRawResponses
                 |> StaticHttpRequest.cacheRequestResolution request
+                |> Debug.log "???status"
 
         request : DataSource ()
         request =
@@ -156,7 +160,7 @@ nextStep ({ allRawResponses, errors } as model) maybeRoutes =
                         ( allUrlsKnown, knownUrlsToFetch ) =
                             case staticRequestsStatus of
                                 StaticHttpRequest.Incomplete newUrlsToFetch ->
-                                    ( False, newUrlsToFetch )
+                                    ( False, newUrlsToFetch |> Debug.log "known to fetch" )
 
                                 _ ->
                                     ( True, [] )
@@ -165,17 +169,19 @@ nextStep ({ allRawResponses, errors } as model) maybeRoutes =
                         fetchedAllKnownUrls =
                             (rawResponses
                                 |> Dict.keys
+                                |> Debug.log "rawResponses |> Dict.keys"
                                 |> Set.fromList
                                 |> Set.union (allRawResponses |> Dict.keys |> Set.fromList)
                             )
                                 |> Set.diff
                                     (knownUrlsToFetch
+                                        |> Debug.log "knownUrlsToFetch"
                                         |> List.map HashRequest.hash
                                         |> Set.fromList
                                     )
                                 |> Set.isEmpty
                     in
-                    not (hasPermanentHttpError || hasPermanentError || (allUrlsKnown && fetchedAllKnownUrls))
+                    not (hasPermanentHttpError || hasPermanentError || (allUrlsKnown && fetchedAllKnownUrls)) |> Debug.log "BOOL"
     in
     if pendingRequests then
         let
@@ -271,23 +277,44 @@ nextStep ({ allRawResponses, errors } as model) maybeRoutes =
 
             CheckIfHandled pageFoundDataSource (NotFetched _ _) andThenRequest ->
                 let
-                    pageFoundResult : Result StaticHttpRequest.Error (Maybe NotFoundReason)
+                    --pageFoundResult : Result StaticHttpRequest.Error (Maybe NotFoundReason)
+                    pageFoundResult : StaticHttpRequest.RequestResult (Maybe NotFoundReason)
                     pageFoundResult =
                         StaticHttpRequest.resolve
                             pageFoundDataSource
                             allRawResponses
                 in
                 case pageFoundResult of
-                    Ok Nothing ->
+                    Done Nothing ->
                         nextStep { model | staticResponses = StaticResponses andThenRequest } maybeRoutes
 
-                    Ok (Just _) ->
-                        ( empty
+                    Done (Just _) ->
+                        ( StaticResponses andThenRequest
+                          -- TODO is this right? Or should it be a fatal error, or try continuing here?
                         , Finish ApiResponse
-                          -- TODO change data type here so you can avoid running `resolve` again from `Cli.elm` since it can be expensive
                         )
 
-                    Err error_ ->
+                    PendingRequests ( urls, _ ) ->
+                        ( StaticResponses andThenRequest
+                          -- TODO is this right? Or should it be a fatal error, or try continuing here?
+                        , Continue
+                            -- TODO do I have a dict already?
+                            Dict.empty
+                            urls
+                            maybeRoutes
+                          --Finish ApiResponse
+                          --  -- TODO change data type here so you can avoid running `resolve` again from `Cli.elm` since it can be expensive
+                          --Continue newAllRawResponses newThing maybeRoutes
+                          --nextStep model
+                          --Finish
+                          --  (Errors <|
+                          --      StaticHttpRequest.toBuildError
+                          --          -- TODO give more fine-grained error reference
+                          --          "get static routes"
+                          --  )
+                        )
+
+                    FatalError error_ ->
                         let
                             failedRequests : List BuildError
                             failedRequests =

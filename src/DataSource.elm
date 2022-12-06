@@ -82,7 +82,7 @@ Any place in your `elm-pages` app where the framework lets you pass in a value o
 
 import Pages.Internal.StaticHttpBody as Body
 import Pages.StaticHttp.Request as HashRequest
-import Pages.StaticHttpRequest exposing (RawRequest(..))
+import Pages.StaticHttpRequest exposing (RawRequest(..), RequestResult(..))
 import RequestsAndPending exposing (RequestsAndPending)
 
 
@@ -118,18 +118,8 @@ A common use for this is to map your data into your elm-pages view:
 
 -}
 map : (a -> b) -> DataSource a -> DataSource b
-map fn requestInfo =
-    case requestInfo of
-        ApiRoute value ->
-            ApiRoute (fn value)
-
-        Request urls lookupFn ->
-            Request
-                urls
-                (mapLookupFn fn lookupFn)
-
-        RequestError error ->
-            RequestError error
+map fn (RawRequest requestInfo) =
+    Pages.StaticHttpRequest.map fn (RawRequest requestInfo)
 
 
 mapLookupFn : (a -> b) -> (d -> c -> DataSource a) -> d -> c -> DataSource b
@@ -207,31 +197,127 @@ combine items =
 
 -}
 map2 : (a -> b -> c) -> DataSource a -> DataSource b -> DataSource c
-map2 fn request1 request2 =
-    case ( request1, request2 ) of
-        ( ApiRoute value1, ApiRoute value2 ) ->
-            ApiRoute (fn value1 value2)
+map2 fn ((RawRequest request1) as r1) ((RawRequest request2) as r2) =
+    let
+        _ =
+            Debug.log "map2" ( r1, r2 )
+    in
+    RawRequest
+        (\mockResolver rawResponses ->
+            case ( request1 mockResolver rawResponses, request2 mockResolver rawResponses ) |> Debug.log "<>" of
+                ( Done value1, Done value2 ) ->
+                    Done (fn value1 value2)
 
-        ( Request urls1 lookupFn1, Request urls2 lookupFn2 ) ->
-            Request
-                (urls1 ++ urls2)
-                (mapReq fn lookupFn1 lookupFn2)
+                ( PendingRequests ( urls1, lookupFn1 ), PendingRequests ( urls2, lookupFn2 ) ) ->
+                    PendingRequests
+                        ( urls1 ++ urls2
+                        , map2 fn lookupFn1 lookupFn2
+                          --case lookupFn1 mockResolver rawResponses of
+                          --    Done value1 ->
+                          --        succeed (fn value1 value2)
+                          --
+                          --    FatalError error ->
+                          --        RawRequest
+                          --            (\_ _ ->
+                          --                FatalError error
+                          --            )
+                          --
+                          --    PendingRequests ( nestedUrls, RawRequest nestedFn ) ->
+                          --        let
+                          --            buzz : RequestResult c
+                          --            buzz =
+                          --                resolveAndMapRequest
+                          --                    (\value1 -> succeed (fn value1 value2))
+                          --                    nestedFn
+                          --                    mockResolver
+                          --                    rawResponses
+                          --        in
+                          --        RawRequest
+                          --            (\_ _ ->
+                          --                -- TODO is it possible to avoid this extra nesting PendingRequests wrapper?
+                          --                PendingRequests
+                          --                    ( nestedUrls
+                          --                    , RawRequest (\_ _ -> buzz)
+                          --                    )
+                          --            )
+                        )
 
-        ( Request urls1 lookupFn1, ApiRoute value2 ) ->
-            Request
-                urls1
-                (mapReq fn lookupFn1 (\_ _ -> ApiRoute value2))
+                --Debug.todo ""
+                --Request
+                --    (urls1 ++ urls2)
+                --    (mapReq fn lookupFn1 lookupFn2)
+                ( PendingRequests ( urls1, RawRequest lookupFn1 ), Done value2 ) ->
+                    PendingRequests
+                        ( urls1
+                        , case lookupFn1 mockResolver rawResponses of
+                            Done value1 ->
+                                succeed (fn value1 value2)
 
-        ( ApiRoute value2, Request urls1 lookupFn1 ) ->
-            Request
-                urls1
-                (mapReq fn (\_ _ -> ApiRoute value2) lookupFn1)
+                            FatalError error ->
+                                RawRequest
+                                    (\_ _ ->
+                                        FatalError error
+                                    )
 
-        ( RequestError error, _ ) ->
-            RequestError error
+                            PendingRequests ( nestedUrls, RawRequest nestedFn ) ->
+                                let
+                                    buzz : RequestResult c
+                                    buzz =
+                                        resolveAndMapRequest
+                                            (\value1 -> succeed (fn value1 value2))
+                                            nestedFn
+                                            mockResolver
+                                            rawResponses
+                                in
+                                RawRequest
+                                    (\_ _ ->
+                                        -- TODO is it possible to avoid this extra nesting PendingRequests wrapper?
+                                        PendingRequests
+                                            ( nestedUrls
+                                            , RawRequest (\_ _ -> buzz)
+                                            )
+                                    )
+                        )
 
-        ( _, RequestError error ) ->
-            RequestError error
+                ( Done value2, PendingRequests ( urls1, RawRequest lookupFn1 ) ) ->
+                    PendingRequests
+                        ( urls1
+                        , case lookupFn1 mockResolver rawResponses of
+                            Done value1 ->
+                                succeed (fn value2 value1)
+
+                            FatalError error ->
+                                RawRequest
+                                    (\_ _ ->
+                                        FatalError error
+                                    )
+
+                            PendingRequests ( nestedUrls, RawRequest nestedFn ) ->
+                                let
+                                    buzz : RequestResult c
+                                    buzz =
+                                        resolveAndMapRequest
+                                            (\value1 -> succeed (fn value2 value1))
+                                            nestedFn
+                                            mockResolver
+                                            rawResponses
+                                in
+                                RawRequest
+                                    (\_ _ ->
+                                        -- TODO is it possible to avoid this extra nesting PendingRequests wrapper?
+                                        PendingRequests
+                                            ( nestedUrls
+                                            , RawRequest (\_ _ -> buzz)
+                                            )
+                                    )
+                        )
+
+                ( FatalError error, _ ) ->
+                    FatalError error
+
+                ( _, FatalError error ) ->
+                    FatalError error
+        )
 
 
 mapReq : (a -> b -> c) -> (e -> d -> DataSource a) -> (e -> d -> DataSource b) -> e -> d -> DataSource c
@@ -241,32 +327,36 @@ mapReq fn lookupFn1 lookupFn2 maybeMock rawResponses =
         (lookupFn2 maybeMock rawResponses)
 
 
-lookup : Maybe Pages.StaticHttpRequest.MockResolver -> DataSource value -> RequestsAndPending -> Result Pages.StaticHttpRequest.Error value
-lookup maybeMockResolver requestInfo rawResponses =
-    case requestInfo of
-        Request urls lookupFn ->
-            lookup maybeMockResolver
-                (addUrls urls (lookupFn maybeMockResolver rawResponses))
-                rawResponses
+lookup : Maybe Pages.StaticHttpRequest.MockResolver -> DataSource value -> RequestsAndPending -> RequestResult value
+lookup maybeMockResolver (RawRequest requestInfo) rawResponses =
+    case requestInfo maybeMockResolver rawResponses of
+        PendingRequests ( urls, RawRequest lookupFn ) ->
+            --lookup maybeMockResolver
+            --    (addUrls urls (lookupFn maybeMockResolver rawResponses))
+            --    rawResponses
+            PendingRequests ( urls, RawRequest lookupFn )
 
-        ApiRoute value ->
-            Ok value
+        Done value ->
+            Done value
 
-        RequestError error ->
-            Err error
+        FatalError error ->
+            FatalError error
 
 
 addUrls : List HashRequest.Request -> DataSource value -> DataSource value
-addUrls urlsToAdd requestInfo =
-    case requestInfo of
-        ApiRoute value ->
-            ApiRoute value
+addUrls urlsToAdd (RawRequest requestInfo) =
+    RawRequest
+        (\mockResolver requests ->
+            case requestInfo mockResolver requests of
+                Done value ->
+                    Done value
 
-        Request initialUrls function ->
-            Request (initialUrls ++ urlsToAdd) function
+                PendingRequests ( initialUrls, function ) ->
+                    PendingRequests ( initialUrls ++ urlsToAdd, function )
 
-        RequestError error ->
-            RequestError error
+                FatalError error ->
+                    FatalError error
+        )
 
 
 {-| The full details to perform a StaticHttp request.
@@ -280,18 +370,19 @@ type alias RequestDetails =
     }
 
 
-lookupUrls : DataSource value -> List RequestDetails
-lookupUrls requestInfo =
-    case requestInfo of
-        ApiRoute _ ->
-            []
 
-        Request urls _ ->
-            urls
-
-        RequestError _ ->
-            -- TODO should this have URLs passed through?
-            []
+--lookupUrls : DataSource value -> List RequestDetails
+--lookupUrls requestInfo =
+--    case requestInfo of
+--        ApiRoute _ ->
+--            []
+--
+--        Request urls _ ->
+--            urls
+--
+--        RequestError _ ->
+--            -- TODO should this have URLs passed through?
+--            []
 
 
 {-| Build off of the response from a previous `DataSource` request to build a follow-up request. You can use the data
@@ -312,30 +403,27 @@ from the previous response to build up the URL, headers, etc. that you send to t
 
 -}
 andThen : (a -> DataSource b) -> DataSource a -> DataSource b
-andThen fn requestInfo =
-    Request
-        (lookupUrls requestInfo)
+andThen fn (RawRequest lookupFnTop) =
+    RawRequest
         (\maybeMockResolver rawResponses ->
-            lookup maybeMockResolver
-                requestInfo
-                rawResponses
-                |> (\result ->
-                        case result of
-                            Ok value ->
-                                case fn value of
-                                    ApiRoute finalValue ->
-                                        ApiRoute finalValue
-
-                                    Request values function ->
-                                        Request values function
-
-                                    RequestError error ->
-                                        RequestError error
-
-                            Err error ->
-                                RequestError error
-                   )
+            resolveAndMapRequest fn lookupFnTop maybeMockResolver rawResponses
         )
+
+
+resolveAndMapRequest : (a -> DataSource value) -> (Maybe Pages.StaticHttpRequest.MockResolver -> RequestsAndPending -> RequestResult a) -> Maybe Pages.StaticHttpRequest.MockResolver -> RequestsAndPending -> RequestResult value
+resolveAndMapRequest fn lookupFnTop maybeMockResolver rawResponses =
+    case lookupFnTop maybeMockResolver rawResponses of
+        Done finalValue ->
+            PendingRequests ( [], fn finalValue )
+
+        PendingRequests ( values, RawRequest function ) ->
+            PendingRequests
+                ( values
+                , RawRequest (\a b -> resolveAndMapRequest fn function a b)
+                )
+
+        FatalError error ->
+            FatalError error
 
 
 {-| A helper for combining `DataSource`s in pipelines.
@@ -371,7 +459,7 @@ andMap =
 -}
 succeed : a -> DataSource a
 succeed value =
-    ApiRoute value
+    RawRequest (\_ _ -> Done value)
 
 
 {-| Stop the StaticHttp chain with the given error message. If you reach a `fail` in your request,
@@ -380,7 +468,10 @@ the terminal).
 -}
 fail : String -> DataSource a
 fail errorMessage =
-    RequestError (Pages.StaticHttpRequest.UserCalledStaticHttpFail errorMessage)
+    RawRequest
+        (\_ _ ->
+            FatalError (Pages.StaticHttpRequest.UserCalledStaticHttpFail errorMessage)
+        )
 
 
 {-| Turn an Err into a DataSource failure.

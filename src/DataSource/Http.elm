@@ -74,7 +74,7 @@ import Json.Decode
 import Json.Encode as Encode
 import Pages.Internal.StaticHttpBody as Body
 import Pages.StaticHttp.Request as HashRequest
-import Pages.StaticHttpRequest exposing (RawRequest(..))
+import Pages.StaticHttpRequest exposing (RawRequest(..), RequestResult(..))
 import RequestsAndPending
 
 
@@ -308,104 +308,112 @@ requestRaw request__ expect =
             , useCache = False
             }
     in
-    Request
-        [ request_ ]
-        (\maybeMockResolver rawResponseDict ->
-            (case maybeMockResolver of
-                Just mockResolver ->
-                    mockResolver request_
-
-                Nothing ->
-                    rawResponseDict |> RequestsAndPending.get (request_ |> HashRequest.hash)
-            )
-                |> (\maybeResponse ->
-                        case maybeResponse of
-                            Just rawResponse ->
-                                Ok rawResponse
+    RawRequest
+        --[ request_ ]
+        (\maybeMockResolver rawResponsesDict_ ->
+            PendingRequests
+                ( [ request_ ]
+                , RawRequest
+                    (\_ rawResponsesDict ->
+                        (case maybeMockResolver of
+                            Just mockResolver ->
+                                mockResolver request_
 
                             Nothing ->
-                                Err (Pages.StaticHttpRequest.MissingHttpResponse request_.url [ request_ ])
-                   )
-                |> Result.andThen
-                    (\(RequestsAndPending.Response maybeResponse body) ->
-                        case ( expect, body, maybeResponse ) of
-                            ( ExpectJson decoder, RequestsAndPending.JsonBody json, _ ) ->
-                                json
-                                    |> Json.Decode.decodeValue decoder
-                                    |> Result.mapError
-                                        (\error ->
-                                            error
-                                                |> Json.Decode.errorToString
-                                                |> Pages.StaticHttpRequest.DecoderError
-                                        )
+                                rawResponsesDict |> RequestsAndPending.get (request_ |> HashRequest.hash)
+                        )
+                            |> (\maybeResponse ->
+                                    case maybeResponse of
+                                        Just rawResponse ->
+                                            Ok rawResponse
 
-                            ( ExpectString mapStringFn, RequestsAndPending.StringBody string, _ ) ->
-                                string
-                                    |> mapStringFn
-                                    |> Ok
+                                        Nothing ->
+                                            Err (Pages.StaticHttpRequest.MissingHttpResponse request_.url [ request_ ])
+                                --Err (Pages.StaticHttpRequest.UserCalledStaticHttpFail <| "TODO this is actually a MissingHttpResponse, improve error:\n" ++ request_.url)
+                               )
+                            |> Result.andThen
+                                (\(RequestsAndPending.Response maybeResponse body) ->
+                                    case ( expect, body, maybeResponse ) of
+                                        ( ExpectJson decoder, RequestsAndPending.JsonBody json, _ ) ->
+                                            json
+                                                |> Json.Decode.decodeValue decoder
+                                                |> Result.mapError
+                                                    (\error ->
+                                                        error
+                                                            |> Json.Decode.errorToString
+                                                            |> Pages.StaticHttpRequest.DecoderError
+                                                    )
 
-                            ( ExpectResponse mapResponse, RequestsAndPending.StringBody asStringBody, Just rawResponse ) ->
-                                let
-                                    asMetadata : Metadata
-                                    asMetadata =
-                                        { url = rawResponse.url
-                                        , statusCode = rawResponse.statusCode
-                                        , statusText = rawResponse.statusText
-                                        , headers = rawResponse.headers
-                                        }
+                                        ( ExpectString mapStringFn, RequestsAndPending.StringBody string, _ ) ->
+                                            string
+                                                |> mapStringFn
+                                                |> Ok
 
-                                    rawResponseToResponse : Response String
-                                    rawResponseToResponse =
-                                        if 200 <= rawResponse.statusCode && rawResponse.statusCode < 300 then
-                                            GoodStatus_ asMetadata asStringBody
+                                        ( ExpectResponse mapResponse, RequestsAndPending.StringBody asStringBody, Just rawResponse ) ->
+                                            let
+                                                asMetadata : Metadata
+                                                asMetadata =
+                                                    { url = rawResponse.url
+                                                    , statusCode = rawResponse.statusCode
+                                                    , statusText = rawResponse.statusText
+                                                    , headers = rawResponse.headers
+                                                    }
 
-                                        else
-                                            BadStatus_ asMetadata asStringBody
-                                in
-                                rawResponseToResponse
-                                    |> mapResponse
-                                    |> Ok
+                                                rawResponseToResponse : Response String
+                                                rawResponseToResponse =
+                                                    if 200 <= rawResponse.statusCode && rawResponse.statusCode < 300 then
+                                                        GoodStatus_ asMetadata asStringBody
 
-                            ( ExpectBytesResponse mapResponse, RequestsAndPending.BytesBody rawBytesBody, Just rawResponse ) ->
-                                let
-                                    asMetadata : Metadata
-                                    asMetadata =
-                                        { url = rawResponse.url
-                                        , statusCode = rawResponse.statusCode
-                                        , statusText = rawResponse.statusText
-                                        , headers = rawResponse.headers
-                                        }
+                                                    else
+                                                        BadStatus_ asMetadata asStringBody
+                                            in
+                                            rawResponseToResponse
+                                                |> mapResponse
+                                                |> Ok
 
-                                    rawResponseToResponse : Response Bytes
-                                    rawResponseToResponse =
-                                        if 200 <= rawResponse.statusCode && rawResponse.statusCode < 300 then
-                                            GoodStatus_ asMetadata rawBytesBody
+                                        ( ExpectBytesResponse mapResponse, RequestsAndPending.BytesBody rawBytesBody, Just rawResponse ) ->
+                                            let
+                                                asMetadata : Metadata
+                                                asMetadata =
+                                                    { url = rawResponse.url
+                                                    , statusCode = rawResponse.statusCode
+                                                    , statusText = rawResponse.statusText
+                                                    , headers = rawResponse.headers
+                                                    }
 
-                                        else
-                                            BadStatus_ asMetadata rawBytesBody
-                                in
-                                rawResponseToResponse
-                                    |> mapResponse
-                                    |> Ok
+                                                rawResponseToResponse : Response Bytes
+                                                rawResponseToResponse =
+                                                    if 200 <= rawResponse.statusCode && rawResponse.statusCode < 300 then
+                                                        GoodStatus_ asMetadata rawBytesBody
 
-                            ( ExpectBytes bytesDecoder, RequestsAndPending.BytesBody rawBytes, _ ) ->
-                                rawBytes
-                                    |> Bytes.Decode.decode bytesDecoder
-                                    |> Result.fromMaybe
-                                        (Pages.StaticHttpRequest.DecoderError
-                                            "Bytes decoding failed."
-                                        )
+                                                    else
+                                                        BadStatus_ asMetadata rawBytesBody
+                                            in
+                                            rawResponseToResponse
+                                                |> mapResponse
+                                                |> Ok
 
-                            ( ExpectWhatever whateverValue, RequestsAndPending.WhateverBody, _ ) ->
-                                Ok whateverValue
+                                        ( ExpectBytes bytesDecoder, RequestsAndPending.BytesBody rawBytes, _ ) ->
+                                            rawBytes
+                                                |> Bytes.Decode.decode bytesDecoder
+                                                |> Result.fromMaybe
+                                                    (Pages.StaticHttpRequest.DecoderError
+                                                        "Bytes decoding failed."
+                                                    )
 
-                            _ ->
-                                Err
-                                    (Pages.StaticHttpRequest.DecoderError
-                                        "Internal error - unexpected body, expect, and raw response combination."
-                                    )
+                                        ( ExpectWhatever whateverValue, RequestsAndPending.WhateverBody, _ ) ->
+                                            Ok whateverValue
+
+                                        _ ->
+                                            Err
+                                                (Pages.StaticHttpRequest.DecoderError
+                                                    "Internal error - unexpected body, expect, and raw response combination."
+                                                )
+                                )
+                            |> Debug.log "http result"
+                            |> toResult
                     )
-                |> toResult
+                )
         )
 
 
@@ -436,11 +444,11 @@ type Error
     | BadBody String
 
 
-toResult : Result Pages.StaticHttpRequest.Error b -> RawRequest b
+toResult : Result Pages.StaticHttpRequest.Error b -> RequestResult b
 toResult result =
     case result of
         Err error ->
-            RequestError error
+            FatalError error
 
         Ok okValue ->
-            ApiRoute okValue
+            Done okValue

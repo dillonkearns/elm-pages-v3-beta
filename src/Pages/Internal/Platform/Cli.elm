@@ -33,7 +33,7 @@ import Pages.Msg
 import Pages.ProgramConfig exposing (ProgramConfig)
 import Pages.SiteConfig exposing (SiteConfig)
 import Pages.StaticHttp.Request
-import Pages.StaticHttpRequest as StaticHttpRequest
+import Pages.StaticHttpRequest as StaticHttpRequest exposing (RequestResult(..))
 import Path exposing (Path)
 import RenderRequest exposing (RenderRequest)
 import RequestsAndPending exposing (RequestsAndPending)
@@ -596,9 +596,12 @@ update :
     -> Model route
     -> ( Model route, Effect )
 update site config msg model =
-    case msg of
+    case msg |> Debug.log "msg" of
         GotDataBatch batch ->
             let
+                _ =
+                    Debug.log "GotDataBatch" batch
+
                 updatedModel : Model route
                 updatedModel =
                     model
@@ -607,6 +610,7 @@ update site config msg model =
             StaticResponses.nextStep
                 updatedModel
                 Nothing
+                |> Debug.log "update nextStep"
                 |> nextStepToEffect site config updatedModel
 
         GotBuildError buildError ->
@@ -631,7 +635,7 @@ nextStepToEffect :
     -> ( StaticResponses, StaticResponses.NextStep route )
     -> ( Model route, Effect )
 nextStepToEffect site config model ( updatedStaticResponsesModel, nextStep ) =
-    case nextStep of
+    case nextStep |> Debug.log "nextStep" of
         StaticResponses.Continue updatedAllRawResponses httpRequests maybeRoutes ->
             let
                 updatedUnprocessedPages : List ( Path, route )
@@ -671,6 +675,7 @@ nextStepToEffect site config model ( updatedStaticResponsesModel, nextStep ) =
                 , (httpRequests
                     |> List.map Effect.FetchHttp
                   )
+                    |> Debug.log "newRequests"
                     |> Effect.Batch
                 )
 
@@ -685,9 +690,8 @@ nextStepToEffect site config model ( updatedStaticResponsesModel, nextStep ) =
                                     let
                                         sharedDataResult : Result BuildError sharedData
                                         sharedDataResult =
-                                            StaticHttpRequest.resolve
-                                                config.sharedData
-                                                model.allRawResponses
+                                            StaticHttpRequest.resolve config.sharedData model.allRawResponses
+                                                |> requestResultToResult
                                                 |> Result.mapError (StaticHttpRequest.toBuildError "")
                                     in
                                     case requestPayload of
@@ -700,6 +704,7 @@ nextStepToEffect site config model ( updatedStaticResponsesModel, nextStep ) =
                                             StaticHttpRequest.resolve
                                                 thing
                                                 model.allRawResponses
+                                                |> requestResultToResult
                                                 |> Result.mapError (StaticHttpRequest.toBuildError "TODO - path from request")
                                                 |> (\response ->
                                                         case response of
@@ -735,6 +740,7 @@ nextStepToEffect site config model ( updatedStaticResponsesModel, nextStep ) =
                                                             DataSource.succeed Nothing
                                                         )
                                                         model.allRawResponses
+                                                        |> requestResultToResult
                                                         |> Result.mapError (StaticHttpRequest.toBuildError (payload.path |> Path.toAbsolute))
                                             in
                                             case pageFoundResult of
@@ -802,6 +808,7 @@ sendSinglePageProgress site contentJson config model info =
                             DataSource.succeed Nothing
                         )
                         model.allRawResponses
+                        |> requestResultToResult
                         |> Result.mapError (StaticHttpRequest.toBuildError currentUrl.path)
 
                 renderedResult : Result BuildError (PageServerResponse { head : List Head.Tag, view : String, title : String } errorPage)
@@ -968,6 +975,7 @@ sendSinglePageProgress site contentJson config model info =
                                 config.data (urlToRoute config currentUrl)
                         )
                         contentJson
+                        |> requestResultToResult
                         |> Result.mapError (StaticHttpRequest.toBuildError currentUrl.path)
 
                 actionDataResult : Result BuildError (PageServerResponse actionData errorPage)
@@ -976,6 +984,7 @@ sendSinglePageProgress site contentJson config model info =
                     StaticHttpRequest.resolve
                         (config.action (urlToRoute config currentUrl))
                         contentJson
+                        |> requestResultToResult
                         |> Result.mapError (StaticHttpRequest.toBuildError currentUrl.path)
 
                 sharedDataResult : Result BuildError sharedData
@@ -983,6 +992,7 @@ sendSinglePageProgress site contentJson config model info =
                     StaticHttpRequest.resolve
                         config.sharedData
                         contentJson
+                        |> requestResultToResult
                         |> Result.mapError (StaticHttpRequest.toBuildError currentUrl.path)
 
                 globalHeadTags : DataSource (List Head.Tag)
@@ -994,6 +1004,7 @@ sendSinglePageProgress site contentJson config model info =
                     StaticHttpRequest.resolve
                         globalHeadTags
                         model.allRawResponses
+                        |> requestResultToResult
                         |> Result.mapError (StaticHttpRequest.toBuildError "Site.elm")
             in
             case Result.map3 (\a b c -> ( a, b, c )) pageFoundResult renderedResult siteDataResult of
@@ -1275,3 +1286,23 @@ urlToRoute config url =
 
     else
         config.urlToRoute url
+
+
+requestResultToResult : RequestResult value -> Result StaticHttpRequest.Error value
+requestResultToResult thing =
+    case thing of
+        Done doneValue ->
+            Ok doneValue
+
+        FatalError error ->
+            error
+                |> Err
+
+        PendingRequests ( pendingUrls, _ ) ->
+            StaticHttpRequest.MissingHttpResponse "" pendingUrls
+                |> Err
+
+
+
+--StaticHttpRequest.UserCalledStaticHttpFail "TODO - use better error message. There are pending URLs but didn't expect here to be."
+--    |> Err

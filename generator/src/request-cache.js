@@ -96,6 +96,7 @@ function lookupOrPerform(portsFile, mode, rawRequest, hasFsAccess, useCache) {
         }
       } else {
         try {
+          console.log(`@@@ fetching ${request.url}`);
           console.time(`fetch ${request.url}`);
           const response = await fetch(request.url, {
             method: request.method,

@@ -280,6 +280,7 @@ function runElmApp(
       } else {
         fromElm = newThing;
       }
+      console.log("@@@fromElm", fromElm);
       if (fromElm.command === "log") {
         console.log(fromElm.value);
       } else if (fromElm.tag === "ApiResponse") {
@@ -455,6 +456,7 @@ async function runInternalJob(
   patternsToWatch
 ) {
   try {
+    console.log("runInternalJob: ", JSON.stringify(requestToPerform, null, 2));
     pendingDataSourceCount += 1;
 
     if (requestToPerform.url === "elm-pages-internal://log") {
@@ -615,6 +617,7 @@ async function runDecryptJob(req, patternsToWatch) {
 
 function flushIfDone(app) {
   if (foundErrors) {
+    console.log("@@@foundErrors");
     pendingDataSourceResponses = [];
   } else if (pendingDataSourceCount === 0) {
     // console.log(
@@ -622,13 +625,15 @@ function flushIfDone(app) {
     // );
 
     flushQueue(app);
+  } else {
+    console.log("Not flushing... pending items: ", pendingDataSourceCount);
   }
 }
 
 function flushQueue(app) {
   const temp = pendingDataSourceResponses;
   pendingDataSourceResponses = [];
-  // console.log("@@@ FLUSHING", temp.length);
+  console.log("@@@ FLUSHING", temp.length);
   app.ports.gotBatchSub.send(temp);
 }
 
