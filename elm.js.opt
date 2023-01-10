@@ -3812,11 +3812,11 @@
     var $author$project$BackendTask$fail = function (error) {
         return $author$project$Pages$StaticHttpRequest$ApiRoute($elm$core$Result$Err(error));
     };
-    var $author$project$Exception$Catchable_fn = function (a, b) {
+    var $author$project$Exception$Exception_fn = function (a, b) {
         return { $: 0, a: a, b: b };
-    }, $author$project$Exception$Catchable = F2($author$project$Exception$Catchable_fn);
+    }, $author$project$Exception$Exception = F2($author$project$Exception$Exception_fn);
     var $author$project$Exception$fromStringWithValue_fn = function (string, value) {
-        return $author$project$Exception$Catchable_fn(value, { eW: string, cb: "Custom Error" });
+        return $author$project$Exception$Exception_fn(value, { eW: string, cb: "Custom Error" });
     }, $author$project$Exception$fromStringWithValue = F2($author$project$Exception$fromStringWithValue_fn);
     var $author$project$Exception$fromString = function (string) {
         return $author$project$Exception$fromStringWithValue_fn(string, 0);
