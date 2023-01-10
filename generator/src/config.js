@@ -12,13 +12,18 @@ async function resolveConfig() {
       );
     })
     .catch((error) => {
-      console.warn(
-        "No `elm-pages.config.mjs` file found. Using default config."
-      );
-      return {
-        headTagsTemplate: defaultHeadTagsTemplate,
-        vite: {},
-      };
+      if (error.code && error.code === 'ERR_MODULE_NOT_FOUND') {
+        console.warn(
+          "No `elm-pages.config.mjs` file found. Using default config."
+        );
+        return {
+          headTagsTemplate: defaultHeadTagsTemplate,
+          vite: {},
+        };
+      } else {
+        console.error("There was an error running `elm-pages.config.mjs`:");
+        console.error(error);
+      }
     });
 
   return {
