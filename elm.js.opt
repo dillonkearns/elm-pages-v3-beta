@@ -3812,8 +3812,15 @@
     var $author$project$BackendTask$fail = function (error) {
         return $author$project$Pages$StaticHttpRequest$ApiRoute($elm$core$Result$Err(error));
     };
+    var $elm$core$Basics$identity = function (x) {
+        return x;
+    };
+    var $author$project$Pages$Internal$FatalError$FatalError = $elm$core$Basics$identity;
+    var $author$project$FatalError$build = function (info) {
+        return info;
+    };
     var $author$project$FatalError$fromString = function (string) {
-        return { eW: string, cb: "Custom Error" };
+        return $author$project$FatalError$build({ eW: string, cb: "Custom Error" });
     };
     var $author$project$Pages$Url$External = function (a) {
         return { $: 1, a: a };
@@ -4396,9 +4403,6 @@
     var $elm$time$Time$utc = $elm$time$Time$Zone_fn(0, _List_Nil);
     var $rtfeldman$elm_iso8601_date_strings$Iso8601$fromTime = function (time) {
         return $rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(4, $elm$time$Time$toYear_fn($elm$time$Time$utc, time)) + ("-" + ($rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(2, $rtfeldman$elm_iso8601_date_strings$Iso8601$fromMonth($elm$time$Time$toMonth_fn($elm$time$Time$utc, time))) + ("-" + ($rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(2, $elm$time$Time$toDay_fn($elm$time$Time$utc, time)) + ("T" + ($rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(2, $elm$time$Time$toHour_fn($elm$time$Time$utc, time)) + (":" + ($rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(2, $elm$time$Time$toMinute_fn($elm$time$Time$utc, time)) + (":" + ($rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(2, $elm$time$Time$toSecond_fn($elm$time$Time$utc, time)) + ("." + ($rtfeldman$elm_iso8601_date_strings$Iso8601$toPaddedString_fn(3, $elm$time$Time$toMillis_fn($elm$time$Time$utc, time)) + "Z"))))))))))));
-    };
-    var $elm$core$Basics$identity = function (x) {
-        return x;
     };
     var $justinmimbs$date$Date$RD = $elm$core$Basics$identity;
     var $elm$core$Basics$neq = _Utils_notEqual;
